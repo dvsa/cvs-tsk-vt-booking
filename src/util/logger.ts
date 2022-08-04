@@ -1,18 +1,21 @@
-import winston from 'winston';
+import { createLogger, format, transports } from 'winston';
 
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL,
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.Console(),
-  ],
+const { printf } = format;
+
+const logFormat = printf((info) => {
+  // Checks if log is an error - has stack info
+  if (info.stack) {
+    return `${info.level}: ${info.stack as string}`;
+  }
+  return `${info.level}: ${info.message as string}`;
 });
 
-// Use a colourised `simple()` format when not in production; `simple()` is more readable in the console.
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(winston.format.simple(), winston.format.colorize()),
-  }));
-}
+const loggerConfig = {
+  level: process.env.LOG_LEVEL || 'info',
+  format: logFormat,
+};
+
+const logger = createLogger();
+logger.add(new transports.Console(loggerConfig));
 
 export default logger;

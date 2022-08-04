@@ -12,7 +12,7 @@ module.exports = {
   output: {
     filename: (chunkData) => awsSamPlugin.filename(chunkData),
     libraryTarget: 'commonjs2',
-    path: path.resolve('.')
+    path: path.resolve('.'),
   },
 
   // Create source maps
@@ -20,7 +20,7 @@ module.exports = {
 
   // Resolve .ts and .js extensions
   resolve: {
-      extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
   },
 
   // Target node
@@ -36,9 +36,9 @@ module.exports = {
 
   // Add the TypeScript loader
   module: {
-      rules: [{ test: /\.tsx?$/, loader: 'ts-loader' }]
+    rules: [{ test: /\.tsx?$/, loader: 'ts-loader' }],
   },
 
   // Add the AWS SAM Webpack plugin
-  plugins: [awsSamPlugin]
+  plugins: [awsSamPlugin],
 };

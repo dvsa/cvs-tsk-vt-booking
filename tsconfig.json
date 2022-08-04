@@ -5,7 +5,9 @@
     "allowJs": true,
     "checkJs": true,
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"]
 }

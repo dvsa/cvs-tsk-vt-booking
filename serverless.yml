@@ -1,0 +1,22 @@
+service: cvs-tsk-vt-booking
+useDotenv: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+provider:
+  region: eu-west-1
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  vtBooking:
+    handler: src/handler.handler
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - vt.booking
+            detail-type:
+              - Dynamics VT Booking
+              - Dynamo VT Booking
