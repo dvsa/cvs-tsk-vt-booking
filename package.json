@@ -28,6 +28,8 @@
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.1188.0",
+    "knex": "^2.2.0",
+    "oracledb": "^5.4.0",
     "winston": "^3.8.1"
   },
   "devDependencies": {
@@ -56,6 +58,7 @@
     "jest-sonar-reporter": "^2.0.0",
     "prettier": "^2.7.1",
     "serverless": "^3.21.0",
+    "serverless-dotenv-plugin": "^4.0.2",
     "serverless-offline": "^9.1.4",
     "serverless-plugin-typescript": "^2.1.2",
     "source-map-support": "^0.5.19",
