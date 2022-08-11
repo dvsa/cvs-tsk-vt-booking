@@ -1,25 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { knex, Knex } from 'knex';
 import logger from '../util/logger';
+import { DatabaseConnectionConfig } from '../interfaces/DatabaseConnectionConfig';
 
 let connection: Knex<any, unknown[]>;
 let instance = 0;
 
-function dbConnect(): Knex<any, unknown[]> {
+function dbConnect(config: DatabaseConnectionConfig): Knex<any, unknown[]> {
   const conn = knex({
     client: 'oracledb',
     connection: {
-      host: process.env.Database_Host,
-      user: process.env.Database_User,
-      password: process.env.Database_Password,
-      database: process.env.Database_Database,
+      host: config.Database_Host,
+      user: config.Database_User,
+      password: config.Database_Password,
+      database: config.Database_Database,
     },
   });
 
   return conn;
 }
 
-export const dbConnection = function (): Knex<any, unknown[]> {
+export const dbConnection = function (
+  config: DatabaseConnectionConfig,
+): Knex<any, unknown[]> {
   try {
     instance++;
     logger.debug(`dbConnection called ${instance} times`);
@@ -29,7 +32,7 @@ export const dbConnection = function (): Knex<any, unknown[]> {
       return connection;
     } else {
       logger.debug('getting new db connection');
-      connection = dbConnect();
+      connection = dbConnect(config);
       return connection;
     }
   } catch (error: unknown) {

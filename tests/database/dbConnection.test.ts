@@ -1,4 +1,5 @@
 import logger from '../../src/util/logger';
+import localOracleConfig from '../../src/config/localOracleConfig.json';
 import { dbConnection } from '../../src/database/dbConnection';
 import { knex, Knex } from 'knex';
 
@@ -21,7 +22,7 @@ describe('dbConnection functions', () => {
       throw new Error('It did not work.');
     });
 
-    expect(() => dbConnection()).toThrow('It did not work.');
+    expect(() => dbConnection(localOracleConfig)).toThrow('It did not work.');
     expect(logger.debug).toHaveBeenCalledTimes(2);
     expect(logger.debug).toHaveBeenNthCalledWith(
       1,
@@ -44,7 +45,7 @@ describe('dbConnection functions', () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     knex.mockImplementation(() => ({} as unknown as Knex));
 
-    dbConnection();
+    dbConnection(localOracleConfig);
     expect(logger.debug).toHaveBeenCalledTimes(2);
     expect(logger.debug).toHaveBeenNthCalledWith(
       1,
@@ -54,7 +55,7 @@ describe('dbConnection functions', () => {
       2,
       'getting new db connection',
     );
-    dbConnection();
+    dbConnection(localOracleConfig);
     expect(logger.debug).toHaveBeenCalledTimes(4);
     expect(logger.debug).toHaveBeenNthCalledWith(
       3,

@@ -1,6 +1,8 @@
 import { insertVtBooking } from '../../src/database/database';
+import localOracleConfig from '../../src/config/localOracleConfig.json';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
+import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -17,9 +19,34 @@ mknex.mockImplementation(
   () => mKnex,
 );
 
+jest.mock('../../src/util/getOracleCredentials');
+const mGetOracleCredentials = mocked(getOracleCredentials, true);
+mGetOracleCredentials.mockImplementation(async () => {
+  return Promise.resolve(localOracleConfig);
+});
+
 describe('database functions', () => {
+  beforeEach(() => {
+    process.env.ORACLE_CONFIG_SECRET = '';
+  });
+
   it('GIVEN everything is okay WHEN the data is inserted THEN the VEHICLE_BOOKING_NO is returned.', async () => {
+    expect.assertions(2);
     const insertResult = await insertVtBooking();
     expect(insertResult[0]).toEqual({ VEHICLE_BOOKING_NO: 1 });
+    expect(mGetOracleCredentials).toHaveBeenCalledTimes(0);
+  });
+
+  it('GIVEN lambda is running WHEN developing locally THEN config is retrieved from file', async () => {
+    expect.assertions(1);
+    await insertVtBooking();
+    expect(mGetOracleCredentials).toHaveBeenCalledTimes(0);
+  });
+
+  it('GIVEN lambda is running WHEN deployed THEN config is retrieved from secrets manager', async () => {
+    expect.assertions(1);
+    process.env.ORACLE_CONFIG_SECRET = 'foo';
+    await insertVtBooking();
+    expect(mGetOracleCredentials).toHaveBeenCalledTimes(1);
   });
 });
