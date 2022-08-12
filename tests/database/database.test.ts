@@ -31,22 +31,7 @@ describe('database functions', () => {
   });
 
   it('GIVEN everything is okay WHEN the data is inserted THEN the VEHICLE_BOOKING_NO is returned.', async () => {
-    expect.assertions(2);
     const insertResult = await insertVtBooking();
     expect(insertResult[0]).toEqual({ VEHICLE_BOOKING_NO: 1 });
-    expect(mGetOracleCredentials).toHaveBeenCalledTimes(0);
-  });
-
-  it('GIVEN lambda is running WHEN developing locally THEN config is retrieved from file', async () => {
-    expect.assertions(1);
-    await insertVtBooking();
-    expect(mGetOracleCredentials).toHaveBeenCalledTimes(0);
-  });
-
-  it('GIVEN lambda is running WHEN deployed THEN config is retrieved from secrets manager', async () => {
-    expect.assertions(1);
-    process.env.ORACLE_CONFIG_SECRET = 'foo';
-    await insertVtBooking();
-    expect(mGetOracleCredentials).toHaveBeenCalledTimes(1);
   });
 });

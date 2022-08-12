@@ -1,9 +1,7 @@
 import logger from '../util/logger';
-import localOracleConfig from '../config/localOracleConfig.json';
 import { dbConnection } from './dbConnection';
 import { VehicleBooking } from '../interfaces/VehicleBooking';
-import { getOracleCredentials } from '../util/getOracleCredentials';
-import { DatabaseConnectionConfig } from '../interfaces/DatabaseConnectionConfig';
+import { Knex } from 'knex';
 
 export const insertVtBooking = async function (): Promise<string[]> {
   logger.info('insertVtBooking starting');
@@ -20,12 +18,9 @@ export const insertVtBooking = async function (): Promise<string[]> {
   vehicleBooking.FK_VEH_SYST_NO = 1234567;
   vehicleBooking.COUNTED_AXLES = 2;
 
-  const config: DatabaseConnectionConfig = process.env.ORACLE_CONFIG_SECRET
-    ? await getOracleCredentials(process.env.ORACLE_CONFIG_SECRET)
-    : localOracleConfig;
-  const insertResult: string[] = await dbConnection(config)
-    .insert([vehicleBooking], ['VEHICLE_BOOKING_NO'])
-    .into('VEHICLE_BOOKING');
+  const connection: Knex<any, unknown[]> = await dbConnection();
+
+  const insertResult: string[] = await connection.insert([vehicleBooking], ['VEHICLE_BOOKING_NO']).into('VEHICLE_BOOKING') as unknown as string[]; 
 
   logger.info('insertVtBooking ending');
 

@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { knex, Knex } from 'knex';
+import localOracleConfig from '../config/localOracleConfig.json';
 import logger from '../util/logger';
 import { DatabaseConnectionConfig } from '../interfaces/DatabaseConnectionConfig';
+import { getOracleCredentials } from '../util/getOracleCredentials';
 
 let connection: Knex<any, unknown[]>;
 let instance = 0;
 
-function dbConnect(config: DatabaseConnectionConfig): Knex<any, unknown[]> {
+export async function dbConnect(): Promise<Knex<any, unknown[]>> {
+  const config: DatabaseConnectionConfig = process.env.ORACLE_CONFIG_SECRET
+    ? await getOracleCredentials(process.env.ORACLE_CONFIG_SECRET)
+    : localOracleConfig;
+
   const conn = knex({
     client: 'oracledb',
     connection: {
@@ -20,22 +26,19 @@ function dbConnect(config: DatabaseConnectionConfig): Knex<any, unknown[]> {
   return conn;
 }
 
-export const dbConnection = function (
-  config: DatabaseConnectionConfig,
-): Knex<any, unknown[]> {
+export const dbConnection = async function (): Promise<Knex<any, unknown[]>> {
   try {
     instance++;
     logger.debug(`dbConnection called ${instance} times`);
-
     if (connection != null) {
       logger.debug('db connection is already alive');
       return connection;
     } else {
       logger.debug('getting new db connection');
-      connection = dbConnect(config);
+      connection = await dbConnect();
       return connection;
     }
-  } catch (error: unknown) {
+  } catch (error) {
     logger.error(
       `Error getting connection: ${JSON.stringify(
         error,
