@@ -1,6 +1,7 @@
+import logger from './util/logger';
 import { EventBridgeEvent } from 'aws-lambda';
 import { insertVtBooking } from './database/database';
-import logger from './util/logger';
+import { VtBooking } from './interfaces/VtBooking';
 
 /**
  * Lambda Handler
@@ -9,11 +10,11 @@ import logger from './util/logger';
  * @returns {Promise<string>}
  */
 export const handler = async (
-  event: EventBridgeEvent<any, any>,
+  event: EventBridgeEvent<'VT Booking', VtBooking>,
 ): Promise<string> => {
   logger.debug(`event: ${JSON.stringify(event, null, 2)}`);
 
-  await insertVtBooking();
+  await insertVtBooking(event.detail);
 
   return Promise.resolve('Event processed.');
 };
