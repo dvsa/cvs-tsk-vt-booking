@@ -15,10 +15,13 @@ jest.mock('../../src/util/getOracleCredentials');
 
 const mGetOracleCredentials = mocked(getOracleCredentials, true);
 
+mGetOracleCredentials.mockImplementation(async () => {
+  return Promise.resolve(localOracleConfig);
+});
+
 describe('dbConnection functions', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
-    process.env.ORACLE_CONFIG_SECRET = '';
+    jest.clearAllMocks();
   });
 
   it('GIVEN an error WHEN inserting data THEN the error is logged and the exception propagated.', async () => {
@@ -80,12 +83,9 @@ describe('dbConnection functions', () => {
     // @ts-ignore: Unreachable code error
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     knex.mockImplementation(() => ({} as unknown as Knex));
-    mGetOracleCredentials.mockImplementation(async () => {
-      return Promise.resolve(localOracleConfig);
-    });
 
     await dbConnect();
-    expect(mGetOracleCredentials).toHaveBeenCalledTimes(0);
+    expect(mGetOracleCredentials).toHaveBeenCalledTimes(1);
     expect(knex).toHaveBeenCalledWith({
       client: 'oracledb',
       connection: {
@@ -103,11 +103,7 @@ describe('dbConnection functions', () => {
     // @ts-ignore: Unreachable code error
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     knex.mockImplementation(() => ({} as unknown as Knex));
-    mGetOracleCredentials.mockImplementation(async () => {
-      return Promise.resolve(localOracleConfig);
-    });
 
-    process.env.ORACLE_CONFIG_SECRET = 'foo';
     await dbConnect();
     expect(mGetOracleCredentials).toHaveBeenCalledTimes(1);
     expect(knex).toHaveBeenCalledWith({

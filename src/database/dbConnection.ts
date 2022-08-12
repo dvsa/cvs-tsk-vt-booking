@@ -9,9 +9,7 @@ let connection: Knex<any, unknown[]>;
 let instance = 0;
 
 export async function dbConnect(): Promise<Knex<any, unknown[]>> {
-  const config: DatabaseConnectionConfig = process.env.ORACLE_CONFIG_SECRET
-    ? await getOracleCredentials(process.env.ORACLE_CONFIG_SECRET)
-    : localOracleConfig;
+  const config: DatabaseConnectionConfig = await getOracleCredentials(process.env.ORACLE_CONFIG_SECRET);
 
   const conn = knex({
     client: 'oracledb',
