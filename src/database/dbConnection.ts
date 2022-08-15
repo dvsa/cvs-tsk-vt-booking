@@ -4,10 +4,10 @@ import logger from '../util/logger';
 import { DatabaseConnectionConfig } from '../interfaces/DatabaseConnectionConfig';
 import { getOracleCredentials } from '../util/getOracleCredentials';
 
-let connection: Knex<any, unknown[]>;
+let connection: Knex<unknown, unknown[]>;
 let instance = 0;
 
-export async function dbConnect(): Promise<Knex<any, unknown[]>> {
+export async function dbConnect(): Promise<Knex<unknown, unknown[]>> {
   const config: DatabaseConnectionConfig = await getOracleCredentials(
     process.env.ORACLE_CONFIG_SECRET,
   );
@@ -25,7 +25,7 @@ export async function dbConnect(): Promise<Knex<any, unknown[]>> {
   return conn;
 }
 
-export const dbConnection = async function (): Promise<Knex<any, unknown[]>> {
+export const dbConnection = async function (): Promise<Knex<unknown, unknown[]>> {
   try {
     instance++;
     logger.debug(`dbConnection called ${instance} times`);

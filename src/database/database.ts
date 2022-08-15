@@ -18,7 +18,7 @@ export const insertVtBooking = async function (): Promise<string[]> {
   vehicleBooking.FK_VEH_SYST_NO = 1234567;
   vehicleBooking.COUNTED_AXLES = 2;
 
-  const connection: Knex<any, unknown[]> = await dbConnection();
+  const connection: Knex<unknown, unknown[]> = await dbConnection();
 
   const insertResult: string[] = await connection.insert([vehicleBooking], ['VEHICLE_BOOKING_NO']).into('VEHICLE_BOOKING') as unknown as string[]; 
 
