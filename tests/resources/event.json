@@ -8,11 +8,11 @@
   "region": "eu-west-1",
   "resources": [],
   "detail": {
-    "SHORT_NAME": "Bob's ATF",
-    "TIMESTAMP0": "2022-08-10 10:00:00",
-    "VRM": "AB12CDE",
-    "FK_APPTYP_APPL_TYP": "AAV",
-    "FK_LANTBD_DATE": "2022-08-15 10:00:00",
-    "FK_STATN_ID": "P12345"
+    "name": "Bob's ATF",
+    "bookingDate": "2022-08-10 10:00:00",
+    "vrm": "AB12CDE",
+    "testCode": "AAV",
+    "testDate": "2022-08-15 10:00:00",
+    "pNumber": "P12345"
   }
 }

@@ -9,14 +9,14 @@ export const insertVtBooking = async function (
   logger.info('insertVtBooking starting');
 
   const vehicleBooking = new VehicleBooking();
-  vehicleBooking.SHORT_NAME = booking.SHORT_NAME;
+  vehicleBooking.SHORT_NAME = booking.name;
   vehicleBooking.VEHICLE_CLASS = 'V';
   vehicleBooking.NO_OF_AXLES = 2;
-  vehicleBooking.TIMESTAMP0 = new Date(booking.TIMESTAMP0);
-  vehicleBooking.VRM = booking.VRM;
-  vehicleBooking.FK_APPTYP_APPL_TYP = booking.FK_APPTYP_APPL_TYP;
-  vehicleBooking.FK_LANTBD_DATE = new Date(booking.FK_LANTBD_DATE);
-  vehicleBooking.FK_STATN_ID = booking.FK_STATN_ID;
+  vehicleBooking.TIMESTAMP0 = new Date(booking.bookingDate);
+  vehicleBooking.VRM = booking.vrm;
+  vehicleBooking.FK_APPTYP_APPL_TYP = booking.testCode;
+  vehicleBooking.FK_LANTBD_DATE = new Date(booking.testDate);
+  vehicleBooking.FK_STATN_ID = booking.pNumber;
   vehicleBooking.FK_VEH_SYST_NO = 1234567;
   vehicleBooking.COUNTED_AXLES = 2;
 

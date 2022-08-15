@@ -1,13 +1,13 @@
 export class VtBooking {
-  SHORT_NAME: string;
+  name: string;
 
-  TIMESTAMP0: string;
+  bookingDate: string;
 
-  VRM: string;
+  vrm: string;
 
-  FK_APPTYP_APPL_TYP: string;
+  testCode: string;
 
-  FK_LANTBD_DATE: string;
+  testDate: string;
 
-  FK_STATN_ID: string;
+  pNumber: string;
 }
