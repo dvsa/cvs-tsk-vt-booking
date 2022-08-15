@@ -1,4 +1,3 @@
-import { SecretsManager } from 'aws-sdk';
 import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 import logger from '../../src/util/logger';
 
@@ -61,7 +60,9 @@ describe('getOracleCredentials', () => {
     expect(responses).toHaveBeenCalledTimes(1);
     expect(responses).toHaveBeenCalledWith('NoSecret');
     expect(result).toBeUndefined();
-    expect(logger.error).toHaveBeenCalledWith('Unable to retrieve secret, secretValue.SecretString was undefined');
+    expect(logger.error).toHaveBeenCalledWith(
+      'Unable to retrieve secret, secretValue.SecretString was undefined',
+    );
     expect.assertions(4);
   });
 

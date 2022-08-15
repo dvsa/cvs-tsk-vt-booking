@@ -1,9 +1,9 @@
 import logger from '../../src/util/logger';
-import localOracleConfig from '../../src/config/localOracleConfig.json';
 import { dbConnect, dbConnection } from '../../src/database/dbConnection';
 import { knex, Knex } from 'knex';
 import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 import { mocked } from 'ts-jest/utils';
+import localOracleConfig from '../resources/localOracleConfig.json'
 
 jest.mock('../../src/util/logger');
 
