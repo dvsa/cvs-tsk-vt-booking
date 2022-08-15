@@ -3,7 +3,7 @@ import { dbConnect, dbConnection } from '../../src/database/dbConnection';
 import { knex, Knex } from 'knex';
 import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 import { mocked } from 'ts-jest/utils';
-import localOracleConfig from '../resources/localOracleConfig.json'
+import localOracleConfig from '../resources/localOracleConfig.json';
 
 jest.mock('../../src/util/logger');
 
