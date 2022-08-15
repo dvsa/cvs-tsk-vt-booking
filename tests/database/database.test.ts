@@ -1,6 +1,8 @@
 import { insertVtBooking } from '../../src/database/database';
+import localOracleConfig from '../resources/localOracleConfig.json';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
+import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -17,7 +19,17 @@ mknex.mockImplementation(
   () => mKnex,
 );
 
+jest.mock('../../src/util/getOracleCredentials');
+const mGetOracleCredentials = mocked(getOracleCredentials, true);
+mGetOracleCredentials.mockImplementation(async () => {
+  return Promise.resolve(localOracleConfig);
+});
+
 describe('database functions', () => {
+  beforeEach(() => {
+    process.env.ORACLE_CONFIG_SECRET = '';
+  });
+
   it('GIVEN everything is okay WHEN the data is inserted THEN the VEHICLE_BOOKING_NO is returned.', async () => {
     const insertResult = await insertVtBooking();
     expect(insertResult[0]).toEqual({ VEHICLE_BOOKING_NO: 1 });

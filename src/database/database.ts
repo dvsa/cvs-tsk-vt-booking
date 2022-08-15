@@ -1,6 +1,7 @@
 import logger from '../util/logger';
 import { dbConnection } from './dbConnection';
 import { VehicleBooking } from '../interfaces/VehicleBooking';
+import { Knex } from 'knex';
 
 export const insertVtBooking = async function (): Promise<string[]> {
   logger.info('insertVtBooking starting');
@@ -17,9 +18,9 @@ export const insertVtBooking = async function (): Promise<string[]> {
   vehicleBooking.FK_VEH_SYST_NO = 1234567;
   vehicleBooking.COUNTED_AXLES = 2;
 
-  const insertResult: string[] = await dbConnection()
-    .insert([vehicleBooking], ['VEHICLE_BOOKING_NO'])
-    .into('VEHICLE_BOOKING');
+  const connection: Knex<unknown, unknown[]> = await dbConnection();
+
+  const insertResult: string[] = await connection.insert([vehicleBooking], ['VEHICLE_BOOKING_NO']).into('VEHICLE_BOOKING') as unknown as string[]; 
 
   logger.info('insertVtBooking ending');
 
