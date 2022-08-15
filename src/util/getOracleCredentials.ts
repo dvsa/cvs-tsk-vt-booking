@@ -8,10 +8,10 @@ export const getOracleCredentials = async (
 ): Promise<DatabaseConnectionConfig> => {
   if (!process.env.ORACLE_CONFIG_SECRET) {
     return {
-      Database_Database: process.env.Databe_Databse,
+      Database_Database: process.env.Database_Database,
       Database_User: process.env.Database_User,
       Database_Host: process.env.Database_Host,
-      Database_Password: process.env.Database_Password
+      Database_Password: process.env.Database_Password,
     };
   }
   logger.debug('Retrieving secret from SecretsManager');
