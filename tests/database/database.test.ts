@@ -1,5 +1,5 @@
 import { insertVtBooking } from '../../src/database/database';
-import localOracleConfig from '../../src/config/localOracleConfig.json';
+import localOracleConfig from '../resources/localOracleConfig.json';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { getOracleCredentials } from '../../src/util/getOracleCredentials';
