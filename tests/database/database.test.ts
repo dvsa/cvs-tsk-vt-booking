@@ -1,5 +1,7 @@
 import event from '../resources/event.json';
+import localOracleConfig from '../resources/localOracleConfig.json';
 import { insertVtBooking } from '../../src/database/database';
+import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { VehicleBooking } from '../../src/interfaces/VehicleBooking';
@@ -67,7 +69,17 @@ const vehicleBooking: VehicleBooking = {
   VRM: 'AB12CDE',
 };
 
+jest.mock('../../src/util/getOracleCredentials');
+const mGetOracleCredentials = mocked(getOracleCredentials, true);
+mGetOracleCredentials.mockImplementation(async () => {
+  return Promise.resolve(localOracleConfig);
+});
+
 describe('database functions', () => {
+  beforeEach(() => {
+    process.env.ORACLE_CONFIG_SECRET = '';
+  });
+
   it('GIVEN everything is okay WHEN the data is inserted THEN the objects are mapped correctly and VEHICLE_BOOKING_NO is returned.', async () => {
     const insertResult = await insertVtBooking(event.detail);
     // eslint-disable-next-line @typescript-eslint/unbound-method
