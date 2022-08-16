@@ -23,9 +23,9 @@ export const insertVtBooking = async function (
 
   const connection: Knex<unknown, unknown[]> = await dbConnection();
 
-  const insertResult: string[] = (await connection
+  const insertResult: string[] = connection
     .insert([vehicleBooking], ['VEHICLE_BOOKING_NO'])
-    .into('VEHICLE_BOOKING')) as unknown as string[];
+    .into('VEHICLE_BOOKING') as unknown as string[];
 
   logger.info('insertVtBooking ending');
 

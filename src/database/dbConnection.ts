@@ -12,7 +12,7 @@ export async function dbConnect(): Promise<Knex<unknown, unknown[]>> {
     process.env.ORACLE_CONFIG_SECRET,
   );
 
-  const conn = knex({
+  return knex({
     client: 'oracledb',
     connection: {
       host: config.Database_Host,
@@ -21,8 +21,6 @@ export async function dbConnect(): Promise<Knex<unknown, unknown[]>> {
       database: config.Database_Database,
     },
   });
-
-  return conn;
 }
 
 export const dbConnection = async function (): Promise<Knex<unknown, unknown[]>> {
