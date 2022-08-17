@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { knex, Knex } from 'knex';
 import logger from '../util/logger';
 import { DatabaseConnectionConfig } from '../interfaces/DatabaseConnectionConfig';
 import { getOracleCredentials } from '../util/getOracleCredentials';
+import { knex, Knex } from 'knex';
 
 let connection: Knex<unknown, unknown[]>;
 let instance = 0;
@@ -12,7 +12,7 @@ export async function dbConnect(): Promise<Knex<unknown, unknown[]>> {
     process.env.ORACLE_CONFIG_SECRET,
   );
 
-  const conn = knex({
+  return knex({
     client: 'oracledb',
     connection: {
       host: config.Database_Host,
@@ -21,8 +21,6 @@ export async function dbConnect(): Promise<Knex<unknown, unknown[]>> {
       database: config.Database_Database,
     },
   });
-
-  return conn;
 }
 
 export const dbConnection = async function (): Promise<Knex<unknown, unknown[]>> {

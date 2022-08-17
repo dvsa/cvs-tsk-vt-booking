@@ -7,5 +7,12 @@
   "time": "2022-08-04T11:04:34Z",
   "region": "eu-west-1",
   "resources": [],
-  "detail": { "key1": "val1", "key2": "val2", "key3": "val3" }
+  "detail": {
+    "name": "Bob's ATF",
+    "bookingDate": "2022-08-10 10:00:00",
+    "vrm": "AB12CDE",
+    "testCode": "AAV",
+    "testDate": "2022-08-15 10:00:00",
+    "pNumber": "P12345"
+  }
 }
