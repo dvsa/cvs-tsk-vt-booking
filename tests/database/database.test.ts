@@ -8,12 +8,10 @@ import { VehicleBooking } from '../../src/interfaces/VehicleBooking';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
-const ent = {
-  VEHICLE_BOOKING_NO: 1,
-};
 const mKnex = {
   insert: jest.fn().mockReturnThis(),
-  into: jest.fn(() => [ent]),
+  into: jest.fn(() => [{ VEHICLE_BOOKING_NO: 1 }]),
+  raw: jest.fn(() => null),
 } as unknown as Knex;
 
 mknex.mockImplementation(
@@ -36,7 +34,7 @@ const vehicleBooking: VehicleBooking = {
   FK_BKGHDR2_NO: null,
   FK_BKGHDR2_USER_LO: null,
   FK_BKGHDR2_USER_NO: null,
-  FK_BKGHDR_NO: 8001,
+  FK_BKGHDR_NO: null,
   FK_BKGHDR_USER_LOC: 999,
   FK_BKGHDR_USER_NO: 'XR',
   FK_LANTBD_DATE: new Date('2022-08-15 10:00:00'),
