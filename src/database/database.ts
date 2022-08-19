@@ -1,6 +1,5 @@
 import logger from '../util/logger';
 import { dbConnection } from './dbConnection';
-import { Knex } from 'knex';
 import { VehicleBooking } from '../interfaces/VehicleBooking';
 import { VtBooking } from '../interfaces/VtBooking';
 
@@ -9,7 +8,12 @@ export const insertVtBooking = async function (
 ): Promise<string[]> {
   logger.info('insertVtBooking starting');
 
+  const connection = await dbConnection();
+
   const vehicleBooking = new VehicleBooking();
+  vehicleBooking.FK_BKGHDR_NO = connection.raw(
+    "COALESCE((SELECT MAX(FK_BKGHDR_NO) + 1 from VEHICLE_BOOKING where FK_BKGHDR_USER_NO = 'XR'), 1)",
+  );
   vehicleBooking.SHORT_NAME = booking.name;
   vehicleBooking.VEHICLE_CLASS = 'V';
   vehicleBooking.NO_OF_AXLES = 2;
@@ -20,8 +24,6 @@ export const insertVtBooking = async function (
   vehicleBooking.FK_STATN_ID = booking.pNumber;
   vehicleBooking.FK_VEH_SYST_NO = 1234567;
   vehicleBooking.COUNTED_AXLES = 2;
-
-  const connection: Knex<unknown, unknown[]> = await dbConnection();
 
   const insertResult: string[] = connection
     .insert([vehicleBooking], ['VEHICLE_BOOKING_NO'])
