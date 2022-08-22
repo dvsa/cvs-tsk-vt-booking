@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import logger from '../logger';
-import { VtBooking } from '../../interfaces/VtBooking';
 
 const schema = Joi.object().keys({
   name: Joi.string().required(),
@@ -11,7 +10,7 @@ const schema = Joi.object().keys({
   pNumber: Joi.string().required(),
 });
 
-export const validateVtBooking = (vtBooking: VtBooking) => {
+export const validateVtBooking = (vtBooking: unknown) => {
   const validationResult = schema.validate(vtBooking, { abortEarly: false });
   if (validationResult.error) {
     logger.error(
