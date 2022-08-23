@@ -10,16 +10,9 @@ import { VtBooking } from './interfaces/VtBooking';
  * @param {SQSEvent} event
  * @returns {Promise<string>}
  */
-export const handler = async (
-  event: SQSEvent,
-): Promise<string> => {
-  if (
-    !event ||
-    !event.Records ||
-    !Array.isArray(event.Records) ||
-    !event.Records.length
-  ) {
-    console.error('ERROR: SQS event is not defined.');
+export const handler = async (event: SQSEvent): Promise<string> => {
+  if (isEventUndefined(event)) {
+    logger.error('ERROR: SQS event is not defined.');
     return Promise.reject('SQS event is empty and cannot be processed');
   }
 
@@ -37,3 +30,10 @@ export const handler = async (
 
   return Promise.resolve('Event processed.');
 };
+
+function isEventUndefined(event: SQSEvent): boolean {
+  return !event ||
+  !event.Records ||
+  !Array.isArray(event.Records) ||
+  !event.Records.length;
+}
