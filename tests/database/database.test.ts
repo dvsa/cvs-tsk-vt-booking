@@ -5,6 +5,7 @@ import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { VehicleBooking } from '../../src/interfaces/VehicleBooking';
+import { VtBooking } from '../../src/interfaces/VtBooking';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -79,7 +80,7 @@ describe('database functions', () => {
   });
 
   it('GIVEN everything is okay WHEN the data is inserted THEN the objects are mapped correctly and VEHICLE_BOOKING_NO is returned.', async () => {
-    const insertResult = await insertVtBooking(event.detail);
+    const insertResult = await insertVtBooking(JSON.parse(event.Records[0].body) as unknown as VtBooking);
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mKnex.insert).toBeCalledWith(
       [vehicleBooking],

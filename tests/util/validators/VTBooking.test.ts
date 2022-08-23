@@ -4,7 +4,7 @@ import { EOL } from 'os';
 import { validateVtBooking } from '../../../src/util/validators/VtBooking';
 import { VtBooking } from '../../../src/interfaces/VtBooking';
 
-const vtBooking = event.detail as VtBooking;
+const vtBooking = JSON.parse(event.Records[0].body) as VtBooking;
 
 describe('Validate VtBooking', () => {
   it('GIVEN a VtBooking WHEN it valid THEN the validation passes.', () => {
