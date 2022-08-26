@@ -1,11 +1,13 @@
 {
-  "version": "0",
-  "id": "2750b062-177d-2737-c576-13a2f11f3de5",
-  "detail-type": "Dynamics VT Booking",
-  "source": "vt:booking",
-  "account": "1234567890XX",
-  "time": "2022-08-04T11:04:34Z",
-  "region": "eu-west-1",
-  "resources": [],
-  "detail": { "key1": "val1", "key2": "val2", "key3": "val3" }
+  "Records": [{
+    "body": "{\"name\":\"Bob's ATF\",\"bookingDate\": \"2022-08-10 10:00:00\",\"vrm\":\"AB12CDE\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 10:00:00\",\"pNumber\":\"P12345\"}",
+    "messageId": "string",
+    "receiptHandle": "string",
+    "attributes": "SQSRecordAttributes",
+    "messageAttributes": "SQSMessageAttributes",
+    "md5OfBody": "string",
+    "eventSource": "string",
+    "eventSourceARN": "string",
+    "awsRegion": "string"
+  }]
 }
