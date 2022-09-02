@@ -1,21 +1,20 @@
-import event from '../resources/event.json';
-import localOracleConfig from '../resources/localOracleConfig.json';
-import { insertVtBooking } from '../../src/database/database';
-import { getOracleCredentials } from '../../src/util/getOracleCredentials';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { VehicleBooking } from '../../src/interfaces/VehicleBooking';
-import { VtBooking } from '../../src/interfaces/VtBooking';
+import { vehicleBookingDb } from '../../src/database/vehicleBookingDb';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
 const mKnex = {
   insert: jest.fn().mockReturnThis(),
-  into: jest.fn(() => [{ VEHICLE_BOOKING_NO: 1 }]),
+  into: jest
+    .fn()
+    .mockImplementationOnce(() => [{ FK_BKGHDR_NO: 1 }])
+    .mockImplementationOnce(() => []),
   raw: jest.fn(() => null),
 } as unknown as Knex;
 
-mknex.mockImplementation(
+mknex.mockImplementationOnce(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   () => mKnex,
 );
@@ -68,24 +67,17 @@ const vehicleBooking: VehicleBooking = {
   VRM: 'AB12CDE',
 };
 
-jest.mock('../../src/util/getOracleCredentials');
-const mGetOracleCredentials = mocked(getOracleCredentials, true);
-mGetOracleCredentials.mockImplementation(async () => {
-  return Promise.resolve(localOracleConfig);
-});
+describe('vehicleBookingDb functions', () => {
+  it('GIVEN everything is okay WHEN the data is inserted THEN the objects are mapped correctly and FK_BKGHDR_NO is returned.', async () => {
+    await vehicleBookingDb.insert(vehicleBooking);
 
-describe('database functions', () => {
-  beforeEach(() => {
-    process.env.ORACLE_CONFIG_SECRET = '';
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(mKnex.insert).toBeCalledWith([vehicleBooking], ['FK_BKGHDR_NO']);
   });
 
-  it('GIVEN everything is okay WHEN the data is inserted THEN the objects are mapped correctly and VEHICLE_BOOKING_NO is returned.', async () => {
-    const insertResult = await insertVtBooking(JSON.parse(event.Records[0].body) as unknown as VtBooking);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(mKnex.insert).toBeCalledWith(
-      [vehicleBooking],
-      ['VEHICLE_BOOKING_NO'],
+  it('GIVEN an issue with the insert WHEN no results are returned THEN an error is thrown.', async () => {
+    await expect(vehicleBookingDb.insert(vehicleBooking)).rejects.toThrow(
+      'Insert failed. No data returned.',
     );
-    expect(insertResult[0]).toEqual({ VEHICLE_BOOKING_NO: 1 });
   });
 });

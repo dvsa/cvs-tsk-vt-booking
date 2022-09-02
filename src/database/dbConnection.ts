@@ -23,7 +23,7 @@ export async function dbConnect(): Promise<Knex<unknown, unknown[]>> {
   });
 }
 
-export const dbConnection = async function (): Promise<Knex<unknown, unknown[]>> {
+export const dbConnection = async (): Promise<Knex<unknown, unknown[]>> => {
   try {
     instance++;
     logger.debug(`dbConnection called ${instance} times`);
