@@ -29,7 +29,7 @@ describe('handler function', () => {
       '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
     const res: string = await handler(bookingEvent);
 
-    expect(res).toBe('Event processed.');
+    expect(res).toBe('Events processed.');
   });
 
   it('GIVEN an event WHEN an error is thrown THEN the error is returned by the handler.', async () => {

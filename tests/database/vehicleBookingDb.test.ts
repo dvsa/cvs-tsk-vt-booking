@@ -2,6 +2,7 @@ import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { VehicleBooking } from '../../src/interfaces/VehicleBooking';
 import { vehicleBookingDb } from '../../src/database/vehicleBookingDb';
+import { VtBooking } from '../../src/interfaces/VtBooking';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -12,12 +13,28 @@ const mKnex = {
     .mockImplementationOnce(() => [{ FK_BKGHDR_NO: 1 }])
     .mockImplementationOnce(() => []),
   raw: jest.fn(() => null),
+  select: jest.fn().mockReturnThis(),
+  from: jest.fn().mockReturnThis(),
+  where: jest.fn().mockReturnThis(),
+  andWhere: jest
+    .fn()
+    .mockImplementationOnce(jest.fn().mockReturnThis())
+    .mockImplementationOnce(() => []),
 } as unknown as Knex;
 
 mknex.mockImplementationOnce(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   () => mKnex,
 );
+
+const vtBooking: VtBooking = {
+  name: 'Bobs ATF',
+  bookingDate: '2022-08-10 10:00:00',
+  vrm: 'AB12CDE',
+  testCode: 'AAV',
+  testDate: '2022-08-15 00:00:00',
+  pNumber: 'P12345',
+};
 
 const vehicleBooking: VehicleBooking = {
   AXLE_SUPLM_AMT: 0,
@@ -37,7 +54,7 @@ const vehicleBooking: VehicleBooking = {
   FK_BKGHDR_NO: null,
   FK_BKGHDR_USER_LOC: 999,
   FK_BKGHDR_USER_NO: 'XR',
-  FK_LANTBD_DATE: new Date('2022-08-15 10:00:00'),
+  FK_LANTBD_DATE: new Date('2022-08-15 00:00:00'),
   FK_LANTBD_OPEN_TIM: new Date('2001-01-01 06:01:00'),
   FK_STATN_ID: 'P12345',
   FK_TBDPOS_ST_TIME: new Date('2001-01-01 08:01:00'),
@@ -78,6 +95,21 @@ describe('vehicleBookingDb functions', () => {
   it('GIVEN an issue with the insert WHEN no results are returned THEN an error is thrown.', async () => {
     await expect(vehicleBookingDb.insert(vehicleBooking)).rejects.toThrow(
       'Insert failed. No data returned.',
+    );
+  });
+
+  it('GIVEN a check if the booking exists WHEN the database is called THEN the correct parameters are passed.', async () => {
+    await vehicleBookingDb.get(vtBooking);
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(mKnex.where).toBeCalledWith('VRM', vtBooking.vrm);
+    expect(mKnex.andWhere).toBeCalledWith(
+      'FK_LANTBD_DATE',
+      new Date(vtBooking.testDate),
+    );
+    expect(mKnex.andWhere).toBeCalledWith(
+      'FK_APPTYP_APPL_TYP',
+      vtBooking.testCode,
     );
   });
 });

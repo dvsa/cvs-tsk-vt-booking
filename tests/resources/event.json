@@ -1,7 +1,7 @@
 {
   "Records": [
     {
-      "body": "{\"name\":\"Bob's ATF\",\"bookingDate\": \"2022-08-10 10:00:00\",\"vrm\":\"AB12CDE\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 10:00:00\",\"pNumber\":\"P12345\"}",
+      "body": "{\"name\":\"Bob's ATF\",\"bookingDate\": \"2022-08-10 10:00:00\",\"vrm\":\"AB12CDE\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 00:00:00\",\"pNumber\":\"P12345\"}",
       "messageId": "string",
       "receiptHandle": "string",
       "attributes": "SQSRecordAttributes",

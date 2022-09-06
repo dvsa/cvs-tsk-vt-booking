@@ -1,5 +1,6 @@
 import { dbConnection } from './dbConnection';
 import { VehicleBooking } from '../interfaces/VehicleBooking';
+import { VtBooking } from '../interfaces/VtBooking';
 
 export const vehicleBookingDb = {
   async insert(vehicleBooking: VehicleBooking): Promise<void> {
@@ -16,5 +17,18 @@ export const vehicleBookingDb = {
     if (results.length === 0) {
       throw new Error('Insert failed. No data returned.');
     }
+  },
+
+  async get(vtBooking: VtBooking): Promise<VehicleBooking[]> {
+    const connection = await dbConnection();
+
+    const results: VehicleBooking[] = await connection
+      .select()
+      .from<VehicleBooking>('VEHICLE_BOOKING')
+      .where('VRM', vtBooking.vrm)
+      .andWhere('FK_LANTBD_DATE', new Date(vtBooking.testDate))
+      .andWhere('FK_APPTYP_APPL_TYP', vtBooking.testCode);
+
+    return results;
   },
 };

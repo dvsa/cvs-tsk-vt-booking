@@ -26,7 +26,7 @@ export const handler = async (event: SQSEvent): Promise<string> => {
     }
   }
 
-  return Promise.resolve('Event processed.');
+  return Promise.resolve('Events processed.');
 };
 
 function isEventUndefined(event: SQSEvent): boolean {
