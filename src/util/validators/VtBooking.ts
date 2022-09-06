@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { VtBooking } from '../../interfaces/VtBooking';
 import logger from '../logger';
 
 const schema = Joi.object().keys({
@@ -10,7 +11,7 @@ const schema = Joi.object().keys({
   pNumber: Joi.string().required(),
 });
 
-export const validateVtBooking = (vtBooking: unknown) => {
+export const validateVtBooking = (vtBooking: unknown): VtBooking => {
   const validationResult = schema.validate(vtBooking, { abortEarly: false });
   if (validationResult.error) {
     logger.error(
@@ -21,4 +22,6 @@ export const validateVtBooking = (vtBooking: unknown) => {
 
     throw new Error('Invalid event received.');
   }
+
+  return vtBooking as VtBooking;
 };

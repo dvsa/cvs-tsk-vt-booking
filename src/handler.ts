@@ -1,8 +1,7 @@
 import logger from './util/logger';
 import { SQSEvent } from 'aws-lambda';
-import { insertVtBooking } from './database/database';
 import { validateVtBooking } from './util/validators/VtBooking';
-import { VtBooking } from './interfaces/VtBooking';
+import { vehicleBooking } from './vehicleBooking/vehicleBooking';
 
 /**
  * Lambda Handler
@@ -18,10 +17,9 @@ export const handler = async (event: SQSEvent): Promise<string> => {
 
   for (const record of event.Records) {
     try {
-      const payload = JSON.parse(record.body) as unknown;
       logger.debug(`validating record: ${JSON.stringify(record, null, 2)}`);
-      validateVtBooking(payload);
-      await insertVtBooking(payload as VtBooking);
+      const vtBooking = validateVtBooking(JSON.parse(record.body));
+      await vehicleBooking.insert(vtBooking);
     } catch (error) {
       logger.error('Error', error);
       return Promise.reject('SQS event could not be processed.');
@@ -32,8 +30,10 @@ export const handler = async (event: SQSEvent): Promise<string> => {
 };
 
 function isEventUndefined(event: SQSEvent): boolean {
-  return !event ||
-  !event.Records ||
-  !Array.isArray(event.Records) ||
-  !event.Records.length;
+  return (
+    !event ||
+    !event.Records ||
+    !Array.isArray(event.Records) ||
+    !event.Records.length
+  );
 }
