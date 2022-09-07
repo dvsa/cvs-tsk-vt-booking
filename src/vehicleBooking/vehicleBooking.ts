@@ -8,6 +8,16 @@ export const vehicleBooking = {
   async insert(vtBooking: VtBooking): Promise<void> {
     logger.info('vehicleBooking insert starting');
 
+    const existingBookings = await vehicleBookingDb.get(vtBooking);
+
+    if (existingBookings.length > 0) {
+      logger.info(
+        `Booking for ${vtBooking.testCode} already exists for ${vtBooking.vrm} on ${vtBooking.testDate}.`,
+      );
+
+      return;
+    }
+
     const vehicle = await vehicleDb.get(vtBooking.vrm);
 
     const booking = {
