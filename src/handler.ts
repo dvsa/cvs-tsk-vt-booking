@@ -15,6 +15,11 @@ export const handler = async (event: SQSEvent): Promise<string> => {
     return Promise.reject('SQS event is empty and cannot be processed');
   }
 
+  if (!isEnabeled()) {
+    logger.info('Event has been ignored - Lambda is set to not insert bookings into VEHICLE_BOOKING table');
+    return Promise.resolve('Event has been ignored - Lambda is set to not insert bookings into VEHICLE_BOOKING table');
+  }
+
   for (const record of event.Records) {
     try {
       logger.debug(`validating record: ${JSON.stringify(record, null, 2)}`);
@@ -28,6 +33,13 @@ export const handler = async (event: SQSEvent): Promise<string> => {
 
   return Promise.resolve('Events processed.');
 };
+
+function isEnabeled(): boolean {
+  if (process.env.INSERT_BOOKINGS == 'false') return false;
+  if (process.env.INSERT_BOOKINGS == 'true') return true;
+
+  throw Error('INSERT_BOOKINGS environment variable must be true or false');
+}
 
 function isEventUndefined(event: SQSEvent): boolean {
   return (

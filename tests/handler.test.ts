@@ -25,6 +25,8 @@ jest.mock('../src/util/logger');
 
 describe('handler function', () => {
   it('GIVEN an event WHEN the handler is invoked THEN the event is processed.', async () => {
+    process.env.INSERT_BOOKINGS = 'true';
+
     bookingEvent.Records[0].body =
       '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
     const res: string = await handler(bookingEvent);
@@ -33,6 +35,8 @@ describe('handler function', () => {
   });
 
   it('GIVEN an event WHEN an error is thrown THEN the error is returned by the handler.', async () => {
+    process.env.INSERT_BOOKINGS = 'true';
+
     bookingEvent.Records[0].body =
       '{"name":"Failure","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
 
@@ -42,7 +46,21 @@ describe('handler function', () => {
     expect(logger.error).toHaveBeenCalledWith('Error', new Error('Oh no!'));
   });
 
+  it('GIVEN an event WHEN the handler is invoked but processing is set to off THEN the event is not processed', async () => {
+    process.env.INSERT_BOOKINGS = 'false';
+    bookingEvent.Records[0].body =
+      '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
+
+    const res: string = await handler(bookingEvent);
+
+    expect(logger.info).toHaveBeenCalledWith('Event has been ignored - Lambda is set to not insert bookings into VEHICLE_BOOKING table');
+
+    expect(res).toBe('Event has been ignored - Lambda is set to not insert bookings into VEHICLE_BOOKING table');
+  });
+
   it('GIVEN an event WHEN the handler is invoked with an invalid event THEN the event is not processed.', async () => {
+    process.env.INSERT_BOOKINGS = 'true';
+
     expect.assertions(1);
     bookingEvent.Records = undefined;
     await expect(handler(bookingEvent)).rejects.toEqual(
