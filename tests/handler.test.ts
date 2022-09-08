@@ -61,13 +61,12 @@ describe('handler function', () => {
 
     const res: string = await handler(bookingEvent);
 
-    expect(logger.info).toHaveBeenNthCalledWith(1,
+    expect(logger.info).toHaveBeenNthCalledWith(
+      1,
       'Event has been ignored - Lambda is set to not insert bookings into VEHICLE_BOOKING table',
     );
     expect(vehicleBooking.insert).not.toHaveBeenCalled();
-    expect(res).toBe(
-      'Events processed.',
-    );
+    expect(res).toBe('Events processed.');
   });
 
   it('GIVEN an event WHEN the handler is invoked with an invalid event THEN the event is not processed.', async () => {

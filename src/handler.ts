@@ -15,8 +15,6 @@ export const handler = async (event: SQSEvent): Promise<string> => {
     return Promise.reject('SQS event is empty and cannot be processed');
   }
 
-  
-
   for (const record of event.Records) {
     try {
       logger.debug(`validating record: ${JSON.stringify(record, null, 2)}`);
