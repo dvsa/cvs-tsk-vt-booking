@@ -5,7 +5,7 @@ import { vehicleDb } from '../database/vehicleDb';
 import { VtBooking } from '../interfaces/VtBooking';
 
 export const vehicleBooking = {
-  async insert(vtBooking: VtBooking): Promise<void> {
+  insert: async (vtBooking: VtBooking): Promise<void> => {
     logger.info('vehicleBooking insert starting');
 
     const existingBookings = await vehicleBookingDb.get(vtBooking);
