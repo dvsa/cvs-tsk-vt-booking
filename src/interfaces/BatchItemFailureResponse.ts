@@ -1,7 +1,7 @@
 export interface BatchItemFailuresResponse {
-  batchItemFailures: BatchItemIdentifiers[]
+  batchItemFailures: BatchItemIdentifiers[];
 }
 
 export interface BatchItemIdentifiers {
-  itemIdentifier: string
+  itemIdentifier: string;
 }

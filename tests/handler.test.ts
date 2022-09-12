@@ -1,12 +1,17 @@
 import event from './resources/event.json';
+import doubleEvent from './resources/doubleEvent.json';
 import { handler } from '../src/handler';
 import { SQSEvent } from 'aws-lambda';
 import { VtBooking } from '../src/interfaces/VtBooking';
 import logger from '../src/util/logger';
 import { vehicleBooking } from '../src/vehicleBooking/vehicleBooking';
-import { BatchItemFailuresResponse, BatchItemIdentifiers } from '../src/interfaces/BatchItemFailureResponse';
+import {
+  BatchItemFailuresResponse,
+  BatchItemIdentifiers,
+} from '../src/interfaces/BatchItemFailureResponse';
 
 const bookingEvent = event as unknown as SQSEvent;
+const twoBookingEvent = doubleEvent as unknown as SQSEvent;
 
 jest.mock('../src/vehicleBooking/vehicleBooking', () => {
   return {
@@ -49,7 +54,27 @@ describe('handler function', () => {
 
     const res = await handler(bookingEvent);
 
-    expect(res).toEqual(<BatchItemFailuresResponse>{ batchItemFailures: [{ itemIdentifier: 'string' }] });
+    expect(res).toEqual(<BatchItemFailuresResponse>{
+      batchItemFailures: [{ itemIdentifier: 'string' }],
+    });
+
+    expect(vehicleBooking.insert).toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalledWith('Error', new Error('Oh no!'));
+  });
+
+  it('GIVEN an event WHEN an error is thrown on one record THEN the error is returned by the handler but the other event is processed', async () => {
+    process.env.INSERT_BOOKINGS = 'true';
+
+    twoBookingEvent.Records[0].body =
+      '{"name":"Failure","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
+    twoBookingEvent.Records[1].body =
+      '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDEF","testCode":"AAV","testDate":"2022-08-15 10:00:01","pNumber":"P123456"}';
+
+    const res = await handler(twoBookingEvent);
+
+    expect(res).toEqual(<BatchItemFailuresResponse>{
+      batchItemFailures: [{ itemIdentifier: 'string' }],
+    });
 
     expect(vehicleBooking.insert).toHaveBeenCalled();
     expect(logger.error).toHaveBeenCalledWith('Error', new Error('Oh no!'));

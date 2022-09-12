@@ -10,11 +10,13 @@ import { BatchItemFailuresResponse } from './interfaces/BatchItemFailureResponse
  * @param {SQSEvent} event
  * @returns {Promise<BatchItemFailuresResponse>}
  */
-export const handler = async (event: SQSEvent): Promise<BatchItemFailuresResponse> => {
+export const handler = async (
+  event: SQSEvent,
+): Promise<BatchItemFailuresResponse> => {
   const res: BatchItemFailuresResponse = {
     batchItemFailures: [],
   };
-  
+
   if (isEventUndefined(event)) {
     logger.error('ERROR: SQS event is not defined.');
     return Promise.reject('SQS event is empty and cannot be processed');
@@ -36,7 +38,9 @@ export const handler = async (event: SQSEvent): Promise<BatchItemFailuresRespons
 
       await vehicleBooking.insert(vtBooking);
     } catch (error) {
-      logger.error(`Batch item ${id} failed to be processed, putting back on SQS queue for 1 retry`);
+      logger.error(
+        `Batch item ${id} failed to be processed, putting back on SQS queue for 1 retry`,
+      );
       logger.error('Error', error);
       res.batchItemFailures.push({ itemIdentifier: id });
     }
