@@ -4,6 +4,7 @@ import { SQSEvent } from 'aws-lambda';
 import { VtBooking } from '../src/interfaces/VtBooking';
 import logger from '../src/util/logger';
 import { vehicleBooking } from '../src/vehicleBooking/vehicleBooking';
+import { BatchItemFailuresResponse, BatchItemIdentifiers } from '../src/interfaces/BatchItemFailureResponse';
 
 const bookingEvent = event as unknown as SQSEvent;
 
@@ -34,10 +35,10 @@ describe('handler function', () => {
 
     bookingEvent.Records[0].body =
       '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
-    const res: string = await handler(bookingEvent);
+    const res: BatchItemFailuresResponse = await handler(bookingEvent);
 
     expect(vehicleBooking.insert).toHaveBeenCalled();
-    expect(res).toBe('Events processed.');
+    expect(res).toEqual(<BatchItemFailuresResponse>{ batchItemFailures: [] });
   });
 
   it('GIVEN an event WHEN an error is thrown THEN the error is returned by the handler.', async () => {
@@ -46,9 +47,9 @@ describe('handler function', () => {
     bookingEvent.Records[0].body =
       '{"name":"Failure","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
 
-    await expect(handler(bookingEvent)).rejects.toEqual(
-      'SQS event could not be processed.',
-    );
+    const res = await handler(bookingEvent);
+
+    expect(res).toEqual(<BatchItemFailuresResponse>{ batchItemFailures: [{ itemIdentifier: 'string' }] });
 
     expect(vehicleBooking.insert).toHaveBeenCalled();
     expect(logger.error).toHaveBeenCalledWith('Error', new Error('Oh no!'));
@@ -59,14 +60,14 @@ describe('handler function', () => {
     bookingEvent.Records[0].body =
       '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
 
-    const res: string = await handler(bookingEvent);
+    const res: BatchItemFailuresResponse = await handler(bookingEvent);
 
     expect(logger.info).toHaveBeenNthCalledWith(
-      1,
+      2,
       'Event has been ignored - Lambda is set to not insert bookings into VEHICLE_BOOKING table',
     );
     expect(vehicleBooking.insert).not.toHaveBeenCalled();
-    expect(res).toBe('Events processed.');
+    expect(res).toEqual(<BatchItemFailuresResponse>{ batchItemFailures: [] });
   });
 
   it('GIVEN an event WHEN the handler is invoked with an invalid event THEN the event is not processed.', async () => {
