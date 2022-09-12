@@ -1,56 +1,76 @@
-# lambda-starter
+# cvs-tsk-vt-booking
 
-A starting pattern for AWS lambda in Typescript
+Part of the Siebel Decoupling process. Test results entered via VTA are routed through to the VEHICLE_BOOKING table used by VT. This function processes the test results feed from SQS, inserting them directly into the Oracle database. More details can be found at [Decoupling Siebel and VT](https://dvsa.atlassian.net/wiki/spaces/HVT/pages/60527518/Decoupling+Siebel+and+VT).
 
-**Requirements**
+The insertion step into the oracle database can be turned off. To enable or disable the insertion set the environmental variable INSERT_BOOKINGS to true or false respectively.
 
-- node v14.17.3
-- [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-- npm 7+
+## Requirements
 
-**Prerequisites**
+- node v14
+- npm v6
+- aws cli v2
 
-- Create a `.env`
-  ```shell
-  cp .env.example .env
-  ```
+## Prerequisites
 
-**Build**
+Create a `.env` file.
 
-- `npm i`
-- `npm run build:dev`
+```shell
+cp .env.example .env
+```
 
-**Watch**
+## Build
 
-To watch for changes and automatically trigger a new build:
+```
+npm i
+npm run build
+```
 
-- `npm run watch:dev`
+## Run Lambdas Locally
 
-**Run Lambdas Locally**
+There are two options to run the lambda locally.
 
-- Build the files first
-- `npm run start:dev`
-- To ensure that the lambdas have been successfully served, run the following command in a separate terminal:
-  - `curl --request GET http://localhost:3000/?message=hello%20world`
-  - the response should be: `{"queryParams": {"message": "hello world"}}`
-- To run CloudWatch Event lambdas: `npm run invoke -- CloudWatchEventLambdaFunction`
+### Manual invoke
 
-**Debug Lambdas Locally (VS Code only)**
+Run `npm run start`. This will instruct serverless offline to 'start' the lambda, which will create an instance of the lambda and wait to be called. Once running you can invoke the lambda using AWS CLI. A PowerShell example:
 
-- Run lambdas in debug mode: `npm run start:dev -- -d 5858`
-- Add a breakpoint to the lambda being tested (`src/handler/get.ts`)
-- Run the debug config from VS Code that corresponds to lambda being tested (`GetLambdaFunction`)
-- Send an HTTP request to the lambda's URI (`curl --request GET http://localhost:3000/?message=hello%20world`)
-- To debug CloudWatch Event lambdas: `npm run invoke -- CWEventLambdaFunction -d 5858`
+```powershell
+aws lambda invoke --cli-binary-format raw-in-base64-out --payload fileb://event.json --endpoint-url http://localhost:3002 --function-name cvs-tsk-vt-booking-dev-vtBooking con:
+```
 
-**Tests**
+You can keep invoking the lambda until you shutdown the serverless offline process. The event.json file used above, can be found in the test/resources folder.
+
+### Auto invoke
+
+Run `npm run invoke`. This will run the function and automatically call it with the payload from test/resources/event.json. It will only run once.
+
+## Debug Lambdas Locally
+
+There are three debug configurations setup for vscode.
+
+- Debug Jest Tests: runs `jest` with the debugger attached
+- Debug Start: runs `npm run start` with the debugger attached
+- Debug Invoke: runs `npm run invoke` with the debugger attached
+  There is an issue with the last two configurations. The debugger does not automatically close after the debugging session. It needs to be manually stopped before you can start a new session.
+
+## SonarQube Scanning
+
+SonarQube code coverage analysis has been added as part of the git prepush hook. This is to better align with what happens in the pipeline.  
+To get it working locally, follow these steps:
+
+- Ensure SonarQube is installed. Running in a [container](https://hub.docker.com/_/sonarqube) is a great option.
+- Within SonarQube, Disable Force user authentication via Administration -> Configuration -> Security.
+- Install jq with `sudo apt install jq` or `brew install jq`.
+  When running `git push`, it will run tests followed by the SonarQube scan. If the scan fails or the unit test coverage is below 80%, the push is cancelled.
+
+## Tests
 
 - The [Jest](https://jestjs.io/) framework is used to run tests and collect code coverage
 - To run the tests, run the following command within the root directory of the project: `npm test`
 - Coverage results will be displayed on terminal and stored in the `coverage` directory
   - The coverage requirements can be set in `jest.config.js`
 
-**Logging**
+## Logging
+
 Logging is handled by `https://github.com/winstonjs/winston`. A pre-configured logger is available, and can be used like so:
 
 ```ts
@@ -61,18 +81,16 @@ logger.error('Hello world');
 logger.warn('Hello world');
 ```
 
-**Tip:** It's usually a good idea to attach the `requestId` and any `X-Correlation-Id` to the logger object's meta data so every log message will contain these useful bits of information.
+To log an Error object you need to use an overload.
 
 ```ts
-const event: APIGatewayProxyEvent = currentInvoke.event as APIGatewayProxyEvent;
-const correlationId: string =
-  event.headers['X-Correlation-Id'] ||
-  (currentInvoke.context as Context).awsRequestId;
+import logger from '../utils/logger';
 
-const { requestId } = event.requestContext;
-
-req.app.locals.correlationId = correlationId;
-req.app.locals.requestId = requestId;
-
-Logger.defaultMeta = { requestId, correlationId };
+try {
+  //Error thrown.
+} catch (error) {
+  logger.error('', error);
+}
 ```
+
+Unlike the default console logging, it enables logging levels. The default level is `info`. This can be adjusted using an environmental variable called `LOG_LEVEL`. The `LOG_LEVEL` values used in this project are `debug`, `info`, `error` and are case sensitive.
