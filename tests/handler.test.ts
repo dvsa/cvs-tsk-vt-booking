@@ -5,10 +5,7 @@ import { SQSEvent } from 'aws-lambda';
 import { VtBooking } from '../src/interfaces/VtBooking';
 import logger from '../src/util/logger';
 import { vehicleBooking } from '../src/vehicleBooking/vehicleBooking';
-import {
-  BatchItemFailuresResponse,
-  BatchItemIdentifiers,
-} from '../src/interfaces/BatchItemFailureResponse';
+import { BatchItemFailuresResponse } from '../src/interfaces/BatchItemFailureResponse';
 
 const bookingEvent = event as unknown as SQSEvent;
 const twoBookingEvent = doubleEvent as unknown as SQSEvent;
