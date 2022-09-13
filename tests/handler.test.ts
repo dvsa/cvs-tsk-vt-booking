@@ -35,8 +35,6 @@ describe('handler function', () => {
   it('GIVEN an event WHEN the handler is invoked THEN the event is processed.', async () => {
     process.env.INSERT_BOOKINGS = 'true';
 
-    bookingEvent.Records[0].body =
-      '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
     const res: BatchItemFailuresResponse = await handler(bookingEvent);
 
     expect(vehicleBooking.insert).toHaveBeenCalled();
@@ -62,11 +60,6 @@ describe('handler function', () => {
   it('GIVEN an event WHEN an error is thrown on one record THEN the error is returned by the handler but the other event is processed', async () => {
     process.env.INSERT_BOOKINGS = 'true';
 
-    twoBookingEvent.Records[0].body =
-      '{"name":"Failure","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
-    twoBookingEvent.Records[1].body =
-      '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDEF","testCode":"AAV","testDate":"2022-08-15 10:00:01","pNumber":"P123456"}';
-
     const res = await handler(twoBookingEvent);
 
     expect(res).toEqual(<BatchItemFailuresResponse>{
@@ -79,8 +72,6 @@ describe('handler function', () => {
 
   it('GIVEN an event WHEN the handler is invoked but processing is set to off THEN the event is not processed', async () => {
     process.env.INSERT_BOOKINGS = 'false';
-    bookingEvent.Records[0].body =
-      '{"name":"Success","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
 
     const res: BatchItemFailuresResponse = await handler(bookingEvent);
 
