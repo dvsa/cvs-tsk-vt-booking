@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import event from '../resources/event.json';
 import logger from '../../src/util/logger';
+import { BookingHeader } from '../../src/interfaces/BookingHeader';
+import { bookingHeaderDb } from '../../src/database/bookingHeaderDb';
 import { vehicleBooking } from '../../src/vehicleBooking/vehicleBooking';
 import { VehicleBooking } from '../../src/interfaces/VehicleBooking';
 import { vehicleBookingDb } from '../../src/database/vehicleBookingDb';
@@ -8,6 +10,16 @@ import { VtBooking } from '../../src/interfaces/VtBooking';
 import { vehicleDb } from '../../src/database/vehicleDb';
 
 jest.mock('../../src/util/logger');
+
+jest.mock('../../src/database/bookingHeaderDb', () => {
+  return {
+    bookingHeaderDb: {
+      insert: jest.fn(() => {
+        return 54321;
+      }),
+    },
+  };
+});
 
 jest.mock('../../src/database/vehicleDb', () => {
   return {
@@ -37,7 +49,13 @@ jest.mock('../../src/database/vehicleBookingDb', () => {
 
 const vtBooking = JSON.parse(event.Records[0].body) as VtBooking;
 
+const bookingHeader = {
+  ...new BookingHeader(),
+  NAME0: vtBooking.name.substring(0, 50),
+};
+
 const booking = new VehicleBooking();
+booking.FK_BKGHDR_NO = 54321;
 booking.SHORT_NAME = vtBooking.name;
 booking.VEHICLE_CLASS = 'L';
 booking.NO_OF_AXLES = 3;
@@ -57,6 +75,7 @@ describe('vehicleBooking functions', () => {
   it('GIVEN everything is okay WHEN the booking is processed THEN the objects are mapped correctly.', async () => {
     await vehicleBooking.insert(vtBooking);
 
+    expect(bookingHeaderDb.insert).toBeCalledWith(bookingHeader);
     expect(vehicleBookingDb.get).toBeCalledWith(vtBooking);
     expect(vehicleDb.get).toBeCalledWith('AB12CDE');
     expect(vehicleBookingDb.insert).toBeCalledWith(booking);

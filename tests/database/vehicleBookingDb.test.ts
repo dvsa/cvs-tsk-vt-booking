@@ -94,7 +94,7 @@ describe('vehicleBookingDb functions', () => {
 
   it('GIVEN an issue with the insert WHEN no results are returned THEN an error is thrown.', async () => {
     await expect(vehicleBookingDb.insert(vehicleBooking)).rejects.toThrow(
-      'Insert failed. No data returned.',
+      'Insert vehicle booking failed. No data inserted.',
     );
   });
 

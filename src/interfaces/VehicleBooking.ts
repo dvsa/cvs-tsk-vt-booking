@@ -1,11 +1,9 @@
-import { Knex } from 'knex';
-
 export class VehicleBooking {
   FK_BKGHDR_USER_LOC = 999;
 
   FK_BKGHDR_USER_NO = 'XR';
 
-  FK_BKGHDR_NO: Knex.Raw<unknown>;
+  FK_BKGHDR_NO: number;
 
   VEHICLE_BOOKING_NO = 1;
 
