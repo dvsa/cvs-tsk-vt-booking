@@ -1,4 +1,6 @@
 import logger from '../util/logger';
+import { BookingHeader } from '../interfaces/BookingHeader';
+import { bookingHeaderDb } from '../database/bookingHeaderDb';
 import { VehicleBooking } from '../interfaces/VehicleBooking';
 import { vehicleBookingDb } from '../database/vehicleBookingDb';
 import { vehicleDb } from '../database/vehicleDb';
@@ -18,11 +20,18 @@ export const vehicleBooking = {
       return;
     }
 
+    const bookingHeader = {
+      ...new BookingHeader(),
+      NAME0: vtBooking.name.substring(0, 50),
+    };
+
+    const bookingHeaderNo = await bookingHeaderDb.insert(bookingHeader);
     const vehicle = await vehicleDb.get(vtBooking.vrm);
 
     const booking = {
       ...new VehicleBooking(),
-      SHORT_NAME: vtBooking.name,
+      FK_BKGHDR_NO: bookingHeaderNo,
+      SHORT_NAME: vtBooking.name.substring(0, 10),
       VEHICLE_CLASS: vehicle.VEHICLE_CLASS,
       NO_OF_AXLES: vehicle.NO_OF_AXLES,
       TIMESTAMP0: new Date(vtBooking.bookingDate),

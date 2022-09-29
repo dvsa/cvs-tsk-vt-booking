@@ -32,6 +32,19 @@ describe('handler function', () => {
     jest.clearAllMocks();
   });
 
+  it('GIVEN INSERT_BOOKINGS is not set WHEN the handler is invoked THEN the function returns an error.', async () => {
+    const res: BatchItemFailuresResponse = await handler(bookingEvent);
+
+    expect(logger.error).toHaveBeenCalledWith(
+      'Error',
+      new Error('INSERT_BOOKINGS environment variable must be true or false'),
+    );
+    expect(vehicleBooking.insert).not.toHaveBeenCalled();
+    expect(res).toEqual(<BatchItemFailuresResponse>{
+      batchItemFailures: [{ itemIdentifier: 'string' }],
+    });
+  });
+
   it('GIVEN an event WHEN the handler is invoked THEN the event is processed.', async () => {
     process.env.INSERT_BOOKINGS = 'true';
 
