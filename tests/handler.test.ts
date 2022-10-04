@@ -1,14 +1,16 @@
 import event from './resources/event.json';
 import doubleEvent from './resources/doubleEvent.json';
+import notMigratedEvent from './resources/notMigratedEvent.json';
+import logger from '../src/util/logger';
+import { BatchItemFailuresResponse } from '../src/interfaces/BatchItemFailureResponse';
 import { handler } from '../src/handler';
 import { SQSEvent } from 'aws-lambda';
-import { VtBooking } from '../src/interfaces/VtBooking';
-import logger from '../src/util/logger';
 import { vehicleBooking } from '../src/vehicleBooking/vehicleBooking';
-import { BatchItemFailuresResponse } from '../src/interfaces/BatchItemFailureResponse';
+import { VtBooking } from '../src/interfaces/VtBooking';
 
 const bookingEvent = event as unknown as SQSEvent;
 const twoBookingEvent = doubleEvent as unknown as SQSEvent;
+const inactiveEvent = notMigratedEvent as unknown as SQSEvent;
 
 jest.mock('../src/vehicleBooking/vehicleBooking', () => {
   return {
@@ -22,6 +24,14 @@ jest.mock('../src/vehicleBooking/vehicleBooking', () => {
         }
       }),
     },
+  };
+});
+
+jest.mock('../src/util/getActiveSites', () => {
+  return {
+    getActiveSites: jest.fn(() => {
+      return ['P12345', 'P123456'];
+    }),
   };
 });
 
@@ -105,5 +115,18 @@ describe('handler function', () => {
       'SQS event is empty and cannot be processed',
     );
     expect(vehicleBooking.insert).not.toHaveBeenCalled();
+  });
+
+  it('GIVEN an event WHEN the handler is invoked with an event from an inactive ATF THEN the event is not processed.', async () => {
+    process.env.INSERT_BOOKINGS = 'true';
+
+    const res: BatchItemFailuresResponse = await handler(inactiveEvent);
+
+    expect(logger.info).toHaveBeenNthCalledWith(
+      2,
+      'Event has been ignored - Site P54321 is not currently active.',
+    );
+    expect(vehicleBooking.insert).not.toHaveBeenCalled();
+    expect(res).toEqual(<BatchItemFailuresResponse>{ batchItemFailures: [] });
   });
 });

@@ -3,6 +3,7 @@ import { SQSEvent } from 'aws-lambda';
 import { validateVtBooking } from './util/validators/VtBooking';
 import { vehicleBooking } from './vehicleBooking/vehicleBooking';
 import { BatchItemFailuresResponse } from './interfaces/BatchItemFailureResponse';
+import { getActiveSites } from './util/getActiveSites';
 
 /**
  * Lambda Handler
@@ -22,12 +23,20 @@ export const handler = async (
     return Promise.reject('SQS event is empty and cannot be processed');
   }
 
+  const activeSites = await getActiveSites();
   for (const record of event.Records) {
     const id = record.messageId;
     try {
       logger.info(`Processing batch item: ${id}`);
       logger.debug(`validating record: ${JSON.stringify(record, null, 2)}`);
       const vtBooking = validateVtBooking(JSON.parse(record.body));
+
+      if (!activeSites.includes(vtBooking.pNumber)) {
+        logger.info(
+          `Event has been ignored - Site ${vtBooking.pNumber} is not currently active.`,
+        );
+        continue;
+      }
 
       if (!isEnabeled()) {
         logger.info(
