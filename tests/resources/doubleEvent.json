@@ -1,7 +1,7 @@
 {
   "Records": [
     {
-      "body": "{\"name\":\"Failure\",\"bookingDate\": \"2022-08-10 10:00:00\",\"vrm\":\"AB12CDE\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 00:00:00\",\"pNumber\":\"P12345\"}",
+      "body": "{\"name\":\"Failure\",\"bookingDate\": \"2022-08-10 10:00:00\",\"vrm\":\"AB12CDE\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 11:00:00\",\"pNumber\":\"P12345\"}",
       "messageId": "string",
       "receiptHandle": "string",
       "attributes": "SQSRecordAttributes",
@@ -12,7 +12,7 @@
       "awsRegion": "string"
     },
     {
-      "body": "{\"name\":\"Success\",\"bookingDate\": \"2022-08-10 10:00:01\",\"vrm\":\"AB12CDEF\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 00:00:01\",\"pNumber\":\"P123456\"}",
+      "body": "{\"name\":\"Success\",\"bookingDate\": \"2022-08-10 10:00:01\",\"vrm\":\"AB12CDEF\",\"testCode\":\"AAV\",\"testDate\":\"2022-08-15 11:00:01\",\"pNumber\":\"P123456\"}",
       "messageId": "string",
       "receiptHandle": "string",
       "attributes": "SQSRecordAttributes",

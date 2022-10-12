@@ -1,3 +1,4 @@
+import vtBooking from '../resources/vtBooking.json';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { vehicleDb } from '../../src/database/vehicleDb';
@@ -24,21 +25,21 @@ mknex.mockImplementationOnce(
 
 describe('vehicleDb functions', () => {
   it('GIVEN everything is okay WHEN  one vehicle is found THEN the details of the vehicle are returned.', async () => {
-    const insertResult = await vehicleDb.get('12345');
+    const insertResult = await vehicleDb.get(vtBooking);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(mKnex.where).toBeCalledWith('CURR_REGMK', '12345   ');
+    expect(mKnex.where).toBeCalledWith('CURR_REGMK', 'AB12CDE ');
     expect(insertResult).toEqual({ VEHICLE_CLASS: 'L' });
   });
 
   it('GIVEN an issue with the search WHEN no vehicles are returned THEN an error is thrown.', async () => {
-    await expect(vehicleDb.get('12345')).rejects.toThrow(
+    await expect(vehicleDb.get(vtBooking)).rejects.toThrow(
       'Get vehicle failed. No vehicles returned.',
     );
   });
 
   it('GIVEN an issue with the search WHEN multiple vehicles are returned THEN an error is thrown.', async () => {
-    await expect(vehicleDb.get('12345')).rejects.toThrow(
+    await expect(vehicleDb.get(vtBooking)).rejects.toThrow(
       'Get vehicle failed. Multiple vehicles returned.',
     );
   });

@@ -17,7 +17,7 @@ export class VehicleBooking {
 
   NO_OF_AXLES: number;
 
-  TIMESTAMP0: Date;
+  TIMESTAMP0: string;
 
   USER_ID = 'cvsvbin';
 
@@ -29,7 +29,7 @@ export class VehicleBooking {
 
   VAT_REQUIRED = 0.0;
 
-  CANCELLATION_DATE = new Date('0001-01-01 00:00:00');
+  CANCELLATION_DATE: string;
 
   RD_CHEQUE_AMOUNT = 0.0;
 
@@ -59,19 +59,19 @@ export class VehicleBooking {
 
   REMARKS = ' ';
 
-  FK_ACCT_ACCT_NO = null;
+  FK_ACCT_ACCT_NO = '74926';
 
   FK_APPTYP_APPL_TYP: string;
 
-  FK_LANTBD_DATE: Date;
+  FK_LANTBD_DATE: string;
 
-  FK_LANTBD_OPEN_TIM = new Date('0001-01-01 06:01:00');
+  FK_LANTBD_OPEN_TIM: string;
 
   FK_STATN_ID: string;
 
   FK_TSLANE_NO = 6;
 
-  FK_TBDPOS_ST_TIME = new Date('0001-01-01 08:01:00');
+  FK_TBDPOS_ST_TIME: string;
 
   FK_VEH_SYST_NO: number;
 

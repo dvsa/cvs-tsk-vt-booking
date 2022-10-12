@@ -1,21 +1,19 @@
-import { Knex } from 'knex';
-
 export class BookingHeader {
   USER_LOCATION = 999;
 
   USER_NO = 'XR';
 
-  BOOKING_HEADER_NO: Knex.Raw<unknown>;
+  BOOKING_HEADER_NO: number;
 
-  DATE_MADE = new Date('0001-01-01 00:00:00');
+  DATE_MADE: string;
 
   NAME0: string;
 
-  TIMESTAMP0 = new Date('0001-01-01 00:00:00');
+  TIMESTAMP0: string;
 
   USER_ID = 'cvsvbin';
 
-  ACCT_NO = null;
+  ACCT_NO = '74926';
 
   AGENT_ID = null;
 
