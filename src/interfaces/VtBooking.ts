@@ -1,3 +1,6 @@
+import { Timeband } from './Timeband';
+import { Vehicle } from './Vehicle';
+
 export class VtBooking {
   name: string;
 
@@ -9,5 +12,13 @@ export class VtBooking {
 
   testDate: string;
 
+  testTime: string;
+
   pNumber: string;
+
+  timeband: Timeband;
+
+  bookingHeaderNo: number;
+
+  vehicle: Vehicle;
 }

@@ -1,9 +1,13 @@
 import logger from './util/logger';
-import { SQSEvent } from 'aws-lambda';
-import { validateVtBooking } from './util/validators/VtBooking';
-import { vehicleBooking } from './vehicleBooking/vehicleBooking';
 import { BatchItemFailuresResponse } from './interfaces/BatchItemFailureResponse';
 import { getActiveSites } from './util/getActiveSites';
+import { bookingHeaderDb } from './database/bookingHeaderDb';
+import { laneTimebandDb } from './database/laneTimebandDb';
+import { SQSEvent } from 'aws-lambda';
+import { timebandPositionDb } from './database/timebandPositionDb';
+import { validateVtBooking } from './util/validators/VtBooking';
+import { vehicleDb } from './database/vehicleDb';
+import { vehicleBookingDb } from './database/vehicleBookingDb';
 
 /**
  * Lambda Handler
@@ -45,7 +49,26 @@ export const handler = async (
         continue;
       }
 
-      await vehicleBooking.insert(vtBooking);
+      vtBooking.testTime = `0001-01-01 ${vtBooking.testDate.slice(11)}`;
+      vtBooking.testDate = vtBooking.testDate.slice(0, 10);
+
+      const existingBookings = await vehicleBookingDb.get(vtBooking);
+      if (existingBookings.length > 0) {
+        logger.info(
+          `Booking for ${vtBooking.testCode} already exists for ${vtBooking.vrm} on ${vtBooking.testDate}.`,
+        );
+        continue;
+      }
+
+      const existingLaneTimebane = await laneTimebandDb.get(vtBooking);
+      if (!existingLaneTimebane) {
+        await laneTimebandDb.insert(vtBooking);
+      }
+
+      await timebandPositionDb.insert(vtBooking);
+      vtBooking.bookingHeaderNo = await bookingHeaderDb.insert(vtBooking);
+      vtBooking.vehicle = await vehicleDb.get(vtBooking);
+      await vehicleBookingDb.insert(vtBooking);
     } catch (error) {
       logger.error(
         `Batch item ${id} failed to be processed, putting back on SQS queue for 1 retry`,
