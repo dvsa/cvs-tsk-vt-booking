@@ -5,11 +5,12 @@ import logger from '../logger';
 const schema = Joi.object().keys({
   name: Joi.string().required(),
   bookingDate: Joi.date().required(),
-  vrm: Joi.string().required(),
+  vrm: Joi.string(),
+  trailerId: Joi.string(),
   testCode: Joi.string().required(),
   testDate: Joi.date().required(),
   pNumber: Joi.string().required(),
-});
+}).xor('vrm', 'trailerId');
 
 export const validateVtBooking = (vtBooking: unknown): VtBooking => {
   const validationResult = schema.validate(vtBooking, { abortEarly: false });

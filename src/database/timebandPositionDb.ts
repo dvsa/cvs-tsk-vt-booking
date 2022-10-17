@@ -21,7 +21,7 @@ export const timebandPositionDb = {
       START_TIME: connection.raw(
         `to_date('${vtBooking.testTime}', 'yyyy-mm-dd hh24:mi:ss')`,
       ),
-      BOOKINGS_LITERAL: vtBooking.vrm,
+      BOOKINGS_LITERAL: vtBooking.vrm ?? vtBooking.trailerId,
     };
 
     const results: TimebandPosition[] = await connection
