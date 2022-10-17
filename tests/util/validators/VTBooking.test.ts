@@ -26,13 +26,15 @@ describe('Validate VtBooking', () => {
     );
     expect(consoleSpy).toHaveBeenCalledWith(`error: "name" is required${EOL}`);
   });
-  
+
   it('GIVEN a VtBooking when it has both trailerId and vrm THEN the error is logged and an error thrown.', () => {
     vtBooking.trailerId = 'TRAILER';
     expect(() => validateVtBooking(vtBooking)).toThrow(
       'Invalid event received.',
     );
-    expect(consoleSpy).toHaveBeenCalledWith(`error: "value" contains a conflict between exclusive peers [vrm, trailerId]${EOL}`);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      `error: "value" contains a conflict between exclusive peers [vrm, trailerId]${EOL}`,
+    );
   });
 
   it('GIVEN a VtBooking when it has neither trailerId or vrm THEN the error is logged and an error thrown.', () => {
@@ -40,6 +42,8 @@ describe('Validate VtBooking', () => {
     expect(() => validateVtBooking(vtBooking)).toThrow(
       'Invalid event received.',
     );
-    expect(consoleSpy).toHaveBeenCalledWith(`error: "value" must contain at least one of [vrm, trailerId]${EOL}`);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      `error: "value" must contain at least one of [vrm, trailerId]${EOL}`,
+    );
   });
 });

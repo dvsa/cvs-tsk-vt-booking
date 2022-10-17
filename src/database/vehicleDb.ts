@@ -7,7 +7,7 @@ function getVehicleIdentifierStatement(vtBooking: VtBooking): [string, string] {
   if (vtBooking.vrm) {
     return ['CURR_REGMK', vtBooking.vrm.padEnd(8, ' ')];
   }
-  if (vtBooking.trailerId) {  
+  if (vtBooking.trailerId) {
     return ['TRAILER_ID', vtBooking.trailerId.padEnd(8, ' ')];
   }
 }

@@ -2,15 +2,17 @@ import Joi from 'joi';
 import { VtBooking } from '../../interfaces/VtBooking';
 import logger from '../logger';
 
-const schema = Joi.object().keys({
-  name: Joi.string().required(),
-  bookingDate: Joi.date().required(),
-  vrm: Joi.string(),
-  trailerId: Joi.string(),
-  testCode: Joi.string().required(),
-  testDate: Joi.date().required(),
-  pNumber: Joi.string().required(),
-}).xor('vrm', 'trailerId');
+const schema = Joi.object()
+  .keys({
+    name: Joi.string().required(),
+    bookingDate: Joi.date().required(),
+    vrm: Joi.string(),
+    trailerId: Joi.string(),
+    testCode: Joi.string().required(),
+    testDate: Joi.date().required(),
+    pNumber: Joi.string().required(),
+  })
+  .xor('vrm', 'trailerId');
 
 export const validateVtBooking = (vtBooking: unknown): VtBooking => {
   const validationResult = schema.validate(vtBooking, { abortEarly: false });
