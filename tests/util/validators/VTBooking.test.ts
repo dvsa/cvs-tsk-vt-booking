@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import event from '../../resources/event.json';
 import { EOL } from 'os';
 import { validateVtBooking } from '../../../src/util/validators/VtBooking';
 import { VtBooking } from '../../../src/interfaces/VtBooking';
+import { getMockSqsEvent } from '../../resources/mSqsEvents';
 
 let vtBooking: VtBooking;
 let consoleSpy;
+const event = getMockSqsEvent(1);
 
 describe('Validate VtBooking', () => {
   beforeEach(() => {

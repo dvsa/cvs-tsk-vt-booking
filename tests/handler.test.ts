@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import doubleEvent from './resources/doubleEvent.json';
-import event from './resources/event.json';
 import logger from '../src/util/logger';
-import notMigratedEvent from './resources/notMigratedEvent.json';
 import { BatchItemFailuresResponse } from '../src/interfaces/BatchItemFailureResponse';
 import { handler } from '../src/handler';
-import { SQSEvent } from 'aws-lambda';
 import { vehicleBookingDb } from '../src/database/vehicleBookingDb';
 import { VtBooking } from '../src/interfaces/VtBooking';
+import { getMockSqsEvent } from './resources/mSqsEvents';
 
-const bookingEvent = event as unknown as SQSEvent;
-const twoBookingEvent = doubleEvent as unknown as SQSEvent;
-const inactiveEvent = notMigratedEvent as unknown as SQSEvent;
+const bookingEvent = getMockSqsEvent(1);
+const twoBookingEvent = getMockSqsEvent(2);
+const inactiveEvent = getMockSqsEvent(3);
 
 jest.mock('../src/database/vehicleBookingDb', () => {
   return {
