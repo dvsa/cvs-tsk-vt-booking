@@ -1,8 +1,8 @@
-import vtBooking from '../resources/vtBooking.json';
 import { BookingHeader } from '../../src/interfaces/BookingHeader';
 import { bookingHeaderDb } from '../../src/database/bookingHeaderDb';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
+import { getMockVtBooking } from '../resources/mVtBookings';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -19,6 +19,8 @@ mknex.mockImplementationOnce(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   () => mKnex,
 );
+
+const vtBooking = getMockVtBooking(1);
 
 const bookingHeader = {
   ...new BookingHeader(),

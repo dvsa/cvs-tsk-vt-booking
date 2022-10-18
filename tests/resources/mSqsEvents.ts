@@ -2,7 +2,7 @@ import { SQSEvent } from 'aws-lambda';
 
 export function getMockSqsEvent(i: number): SQSEvent {
   switch (i) {
-    case 1: 
+    case 1:
       return <SQSEvent>{
         Records: [
           {
