@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { EOL } from 'os';
-import { validateVtBooking } from '../../../src/util/validators/VtBooking';
+import { validateVtBooking } from '../../../src/util/validators/vtBooking';
 import { VtBooking } from '../../../src/interfaces/VtBooking';
 import { singleBookingEvent } from '../../resources/mSqsEvents';
 
