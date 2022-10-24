@@ -1,10 +1,7 @@
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
 import { vehicleDb } from '../../src/database/vehicleDb';
-import { getMockVtBooking } from '../resources/mVtBookings';
-
-const nonTrailerBooking = getMockVtBooking(1);
-const trailerBooking = getMockVtBooking(2);
+import { psvVtBooking, trailerVtBooking } from '../resources/mVtBookings';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -33,7 +30,7 @@ describe('vehicleDb functions', () => {
   });
 
   it('GIVEN everything is okay WHEN  one vehicle is found THEN the details of the vehicle are returned.', async () => {
-    const insertResult = await vehicleDb.get(nonTrailerBooking);
+    const insertResult = await vehicleDb.get(psvVtBooking);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mKnex.where).toBeCalledWith('CURR_REGMK', 'AB12CDE ');
@@ -41,21 +38,21 @@ describe('vehicleDb functions', () => {
   });
 
   it('GIVEN everything is okay WHEN one trailer is found THEN the details of the vehicle are returned', async () => {
-    const insertResult = await vehicleDb.get(trailerBooking);
-  
+    const insertResult = await vehicleDb.get(trailerVtBooking);
+
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mKnex.where).toBeCalledWith('TRAILER_ID', 'TRAILER ');
     expect(insertResult).toEqual({ VEHICLE_CLASS: 'T' });
   });
 
   it('GIVEN an issue with the search WHEN no vehicles are returned THEN an error is thrown.', async () => {
-    await expect(vehicleDb.get(nonTrailerBooking)).rejects.toThrow(
+    await expect(vehicleDb.get(psvVtBooking)).rejects.toThrow(
       'Get vehicle failed. No vehicles returned.',
     );
   });
 
   it('GIVEN an issue with the search WHEN multiple vehicles are returned THEN an error is thrown.', async () => {
-    await expect(vehicleDb.get(nonTrailerBooking)).rejects.toThrow(
+    await expect(vehicleDb.get(psvVtBooking)).rejects.toThrow(
       'Get vehicle failed. Multiple vehicles returned.',
     );
   });

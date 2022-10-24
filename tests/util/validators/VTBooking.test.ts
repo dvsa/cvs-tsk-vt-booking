@@ -2,15 +2,14 @@
 import { EOL } from 'os';
 import { validateVtBooking } from '../../../src/util/validators/VtBooking';
 import { VtBooking } from '../../../src/interfaces/VtBooking';
-import { getMockSqsEvent } from '../../resources/mSqsEvents';
+import { singleBookingEvent } from '../../resources/mSqsEvents';
 
 let vtBooking: VtBooking;
 let consoleSpy;
-const event = getMockSqsEvent(1);
 
 describe('Validate VtBooking', () => {
   beforeEach(() => {
-    vtBooking = JSON.parse(event.Records[0].body) as VtBooking;
+    vtBooking = JSON.parse(singleBookingEvent.Records[0].body) as VtBooking;
     // @ts-ignore
     consoleSpy = jest.spyOn(console._stdout, 'write');
     jest.clearAllMocks();
