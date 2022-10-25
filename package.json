@@ -23,7 +23,7 @@
     "package:zip": "cd package && zip -qr --symlinks ../${ZIP_NAME}.zip . && cd .. && rimraf package",
     "prepare": "husky install",
     "tools-setup": "echo 'nothing to do for now'",
-    "invoke": "sls invoke local -f vtBooking -p ./tests/resources/event.json",
+    "invoke": "sls invoke local -f vtBooking -p ./tests/resources/psvEvent.json",
     "commit-msg": "commitlint --edit",
     "pre-commit": "npm run security-checks && npm run audit && npm run format && npm run lint",
     "predeploy": "npm install && npm run prepush",

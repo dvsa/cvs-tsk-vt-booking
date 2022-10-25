@@ -6,7 +6,9 @@ export class VtBooking {
 
   bookingDate: string;
 
-  vrm: string;
+  vrm?: string;
+
+  trailerId?: string;
 
   testCode: string;
 

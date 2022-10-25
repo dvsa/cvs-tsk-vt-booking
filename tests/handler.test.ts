@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import doubleEvent from './resources/doubleEvent.json';
-import event from './resources/event.json';
 import logger from '../src/util/logger';
-import notMigratedEvent from './resources/notMigratedEvent.json';
 import { BatchItemFailuresResponse } from '../src/interfaces/BatchItemFailureResponse';
 import { handler } from '../src/handler';
-import { SQSEvent } from 'aws-lambda';
 import { vehicleBookingDb } from '../src/database/vehicleBookingDb';
 import { VtBooking } from '../src/interfaces/VtBooking';
-
-const bookingEvent = event as unknown as SQSEvent;
-const twoBookingEvent = doubleEvent as unknown as SQSEvent;
-const inactiveEvent = notMigratedEvent as unknown as SQSEvent;
+import {
+  singleBookingEvent,
+  doubleBookingEvent,
+  inactiveEvent,
+} from './resources/mSqsEvents';
 
 jest.mock('../src/database/vehicleBookingDb', () => {
   return {
@@ -90,7 +87,7 @@ describe('handler function', () => {
   });
 
   it('GIVEN INSERT_BOOKINGS is not set WHEN the handler is invoked THEN the function returns an error.', async () => {
-    const res: BatchItemFailuresResponse = await handler(bookingEvent);
+    const res: BatchItemFailuresResponse = await handler(singleBookingEvent);
 
     expect(logger.error).toHaveBeenCalledWith(
       'Error',
@@ -105,7 +102,7 @@ describe('handler function', () => {
   it('GIVEN an event WHEN the handler is invoked THEN the event is processed.', async () => {
     process.env.INSERT_BOOKINGS = 'true';
 
-    const res: BatchItemFailuresResponse = await handler(bookingEvent);
+    const res: BatchItemFailuresResponse = await handler(singleBookingEvent);
 
     expect(vehicleBookingDb.insert).toHaveBeenCalled();
     expect(res).toEqual(<BatchItemFailuresResponse>{ batchItemFailures: [] });
@@ -114,10 +111,10 @@ describe('handler function', () => {
   it('GIVEN an event WHEN an error is thrown THEN the error is returned by the handler.', async () => {
     process.env.INSERT_BOOKINGS = 'true';
 
-    bookingEvent.Records[0].body =
+    singleBookingEvent.Records[0].body =
       '{"name":"Failure","bookingDate": "2022-08-10 10:00:00","vrm":"AB12CDE","testCode":"AAV","testDate":"2022-08-15 10:00:00","pNumber":"P12345"}';
 
-    const res = await handler(bookingEvent);
+    const res = await handler(singleBookingEvent);
 
     expect(res).toEqual(<BatchItemFailuresResponse>{
       batchItemFailures: [{ itemIdentifier: 'string' }],
@@ -130,7 +127,7 @@ describe('handler function', () => {
   it('GIVEN an event WHEN an error is thrown on one record THEN the error is returned by the handler but the other event is processed', async () => {
     process.env.INSERT_BOOKINGS = 'true';
 
-    const res = await handler(twoBookingEvent);
+    const res = await handler(doubleBookingEvent);
 
     expect(res).toEqual(<BatchItemFailuresResponse>{
       batchItemFailures: [{ itemIdentifier: 'string' }],
@@ -143,7 +140,7 @@ describe('handler function', () => {
   it('GIVEN an event WHEN the handler is invoked but processing is set to off THEN the event is not processed', async () => {
     process.env.INSERT_BOOKINGS = 'false';
 
-    const res: BatchItemFailuresResponse = await handler(bookingEvent);
+    const res: BatchItemFailuresResponse = await handler(singleBookingEvent);
 
     expect(logger.info).toHaveBeenNthCalledWith(
       2,
@@ -157,8 +154,8 @@ describe('handler function', () => {
     process.env.INSERT_BOOKINGS = 'true';
 
     expect.assertions(2);
-    bookingEvent.Records = undefined;
-    await expect(handler(bookingEvent)).rejects.toEqual(
+    singleBookingEvent.Records = undefined;
+    await expect(handler(singleBookingEvent)).rejects.toEqual(
       'SQS event is empty and cannot be processed',
     );
     expect(vehicleBookingDb.insert).not.toHaveBeenCalled();

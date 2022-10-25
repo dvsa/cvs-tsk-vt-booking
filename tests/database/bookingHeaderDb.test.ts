@@ -1,8 +1,8 @@
-import vtBooking from '../resources/vtBooking.json';
 import { BookingHeader } from '../../src/interfaces/BookingHeader';
 import { bookingHeaderDb } from '../../src/database/bookingHeaderDb';
 import { knex, Knex } from 'knex';
 import { mocked } from 'ts-jest/utils';
+import { psvVtBooking } from '../resources/mVtBookings';
 
 jest.mock('knex');
 const mknex = mocked(knex, true);
@@ -22,7 +22,7 @@ mknex.mockImplementationOnce(
 
 const bookingHeader = {
   ...new BookingHeader(),
-  NAME0: vtBooking.name.substring(0, 50),
+  NAME0: psvVtBooking.name.substring(0, 50),
   BOOKING_HEADER_NO: null,
   DATE_MADE: null,
   TIMESTAMP0: null,
@@ -30,7 +30,7 @@ const bookingHeader = {
 
 describe('bookingHeaderDb functions', () => {
   it('GIVEN everything is okay WHEN the data is inserted THEN the objects are mapped correctly and BOOKING_HEADER_NO is returned.', async () => {
-    const bookingHeaderNo = await bookingHeaderDb.insert(vtBooking);
+    const bookingHeaderNo = await bookingHeaderDb.insert(psvVtBooking);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mKnex.insert).toBeCalledWith([bookingHeader], ['BOOKING_HEADER_NO']);
@@ -38,7 +38,7 @@ describe('bookingHeaderDb functions', () => {
   });
 
   it('GIVEN an issue with the insert WHEN no results are returned THEN an error is thrown.', async () => {
-    await expect(bookingHeaderDb.insert(vtBooking)).rejects.toThrow(
+    await expect(bookingHeaderDb.insert(psvVtBooking)).rejects.toThrow(
       'Insert booking header failed. No data returned.',
     );
   });

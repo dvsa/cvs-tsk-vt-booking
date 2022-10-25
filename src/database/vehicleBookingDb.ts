@@ -24,7 +24,7 @@ export const vehicleBookingDb = {
       SHORT_NAME: vtBooking.name.substring(0, 10),
       VEHICLE_CLASS: vtBooking.vehicle.VEHICLE_CLASS,
       NO_OF_AXLES: vtBooking.vehicle.NO_OF_AXLES,
-      VRM: vtBooking.vrm,
+      VRM: vtBooking.vrm ?? vtBooking.trailerId,
       FK_APPTYP_APPL_TYP: vtBooking.testCode,
       FK_LANTBD_DATE: connection.raw(
         `to_date('${vtBooking.testDate}', 'yyyy-mm-dd')`,
@@ -50,7 +50,7 @@ export const vehicleBookingDb = {
     return connection
       .select()
       .from<VehicleBooking>('VEHICLE_BOOKING')
-      .where('VRM', vtBooking.vrm)
+      .where('VRM', vtBooking.vrm ?? vtBooking.trailerId)
       .andWhere(
         connection.raw(
           `FK_LANTBD_DATE = to_date('${vtBooking.testDate}', 'yyyy-mm-dd')`,
