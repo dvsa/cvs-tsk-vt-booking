@@ -5,7 +5,7 @@ import { getActiveSites } from './util/getActiveSites';
 import { laneTimebandDb } from './database/laneTimebandDb';
 import { SQSEvent } from 'aws-lambda';
 import { timebandPositionDb } from './database/timebandPositionDb';
-import { validateTestCode } from './util/validators/testCode';
+import { testCodeMaps } from './util/validators/testCode';
 import { validateVtBooking } from './util/validators/vtBooking';
 import { vehicleDb } from './database/vehicleDb';
 import { vehicleBookingDb } from './database/vehicleBookingDb';
@@ -35,7 +35,8 @@ export const handler = async (
       logger.info(`Processing batch item: ${id}`);
       logger.debug(`validating record: ${JSON.stringify(record, null, 2)}`);
       const vtBooking = validateVtBooking(JSON.parse(record.body));
-      vtBooking.testCode = validateTestCode(vtBooking.testCode);
+      vtBooking.testCode =
+        testCodeMaps[vtBooking.testCode] ?? vtBooking.testCode;
 
       if (!activeSites.includes(vtBooking.pNumber)) {
         logger.info(
