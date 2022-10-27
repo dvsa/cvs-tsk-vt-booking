@@ -31,7 +31,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1188.0",
+    "aws-sdk": "^2.1221.0",
     "joi": "^17.6.0",
     "knex": "^2.2.0",
     "oracledb": "^5.4.0",
