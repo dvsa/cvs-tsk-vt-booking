@@ -1,7 +1,7 @@
 export class TimebandPosition {
   FK_STATN_ID: string;
 
-  FK_TSLANE_NO = 6;
+  FK_TSLANE_NO = 1;
 
   FK_LANTBD_DATE: Date;
 

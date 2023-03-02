@@ -1,7 +1,7 @@
 export class LaneTimeband {
   FK_STATN_ID: string;
 
-  FK_TSLANE_NO = 6;
+  FK_TSLANE_NO = 1;
 
   DATE0: Date;
 
