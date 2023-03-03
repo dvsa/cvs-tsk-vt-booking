@@ -37,7 +37,7 @@ export const laneTimebandDb = {
       .select()
       .from<LaneTimeband>('LANE_TIMEBAND')
       .where('FK_STATN_ID', vtBooking.pNumber)
-      .andWhere('FK_TSLANE_NO', 6)
+      .andWhere('FK_TSLANE_NO', 1)
       .andWhere(
         connection.raw(
           `OPEN_TIME = to_date('${vtBooking.timeband.openTime}', 'yyyy-mm-dd hh24:mi:ss')`,

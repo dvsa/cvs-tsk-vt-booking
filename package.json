@@ -13,7 +13,7 @@
     "lint": "eslint '*/**/*.ts' --quiet --fix",
     "lint:ci": "eslint '*/**/*.ts'",
     "format": "prettier --write .",
-    "audit": "npm audit",
+    "audit": "npm audit --prod",
     "sonar-scanner": "npm run test && sonar-scanner",
     "security-checks": "git secrets --scan",
     "package": "npm run package:copyfiles && npm run package:getoracle && npm run package:npminstall && npm run package:zip",
@@ -33,7 +33,7 @@
   "dependencies": {
     "aws-sdk": "^2.1188.0",
     "joi": "^17.6.0",
-    "knex": "^2.2.0",
+    "knex": "^2.4.2",
     "oracledb": "^5.4.0",
     "winston": "^3.8.1"
   },
