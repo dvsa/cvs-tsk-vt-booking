@@ -46,7 +46,7 @@ describe('getOracleCredentials', () => {
   });
 
   it('GIVEN an invocation WHEN getting secret THEN return oracle credentials object', async () => {
-    process.env.ORACLE_CONFIG_SECRET = 'SECRET';
+    process.env.ORACLE_CONFIG_SECRET = 'SOME_HIDDEN_VALUE';
     const result = await getOracleCredentials('Success');
     expect(responses).toHaveBeenCalledTimes(1);
     expect(responses).toHaveBeenCalledWith('Success');
@@ -55,7 +55,7 @@ describe('getOracleCredentials', () => {
   });
 
   it('GIVEN no secret returned WHEN getting secret THEN return nothing', async () => {
-    process.env.ORACLE_CONFIG_SECRET = 'SECRET';
+    process.env.ORACLE_CONFIG_SECRET = 'SOME_HIDDEN_VALUE';
     const result = await getOracleCredentials('NoSecret');
     expect(responses).toHaveBeenCalledTimes(1);
     expect(responses).toHaveBeenCalledWith('NoSecret');
@@ -67,7 +67,7 @@ describe('getOracleCredentials', () => {
   });
 
   it('GIVEN an error occurs WHEN getting secret THEN throw error', async () => {
-    process.env.ORACLE_CONFIG_SECRET = 'SECRET';
+    process.env.ORACLE_CONFIG_SECRET = 'SOME_HIDDEN_VALUE';
     await expect(getOracleCredentials('Failure')).rejects.toThrow(
       'Failed to get secret',
     );
